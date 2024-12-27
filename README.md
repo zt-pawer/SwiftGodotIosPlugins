@@ -3,8 +3,8 @@
 This is a Swift implementation of the GameCenter plugin for Godot
 Tested with Godot 4.3, the plugin in is in experimental mode and can change 
 
-[![Godot](https://img.shields.io/badge/Godot%20Engine-3.2.2-blue.svg)](https://github.com/godotengine/godot/)
-[![SwiftGodot](https://github.com/user-attachments/assets/c537aefa-561d-413c-a563-8aac1b1758ba)](https://github.com/migueldeicaza/SwiftGodot/)
+[![Godot](https://img.shields.io/badge/Godot%20Engine-4.3-blue.svg)](https://github.com/godotengine/godot/)
+[![SwiftGodot]](https://github.com/migueldeicaza/SwiftGodot/)
 
 # Supported Platforms
 
