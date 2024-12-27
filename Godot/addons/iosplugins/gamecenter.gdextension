@@ -1,0 +1,15 @@
+[configuration]
+entry_symbol = "gamecenter"
+compatibility_minimum = 4.2
+
+[libraries]
+macos.debug = "res://addons/iosplugins/macos/libGameCenter.dylib.dSYM"
+macos.release = "res://addons/iosplugins/macos/libGameCenter.dylib"
+ios.debug = "res://addons/iosplugins/ios/GameCenter.framework"
+ios.release = "res://addons/iosplugins/ios/GameCenter.framework"
+
+[dependencies]
+macos.debug = {"res://addons/iosplugins/macos/libSwiftGodot.dylib.dSYM" : ""}
+macos.release = {"res://addons/iosplugins/macos/libSwiftGodot.dylib" : ""}
+ios.debug = {"res://addons/iosplugins/ios/SwiftGodot.framework" : ""}
+ios.release = {"res://addons/iosplugins/ios/SwiftGodot.framework" : ""}
