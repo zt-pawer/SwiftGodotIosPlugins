@@ -4,7 +4,8 @@ This is a Swift implementation of the GameCenter plugin for Godot
 Tested with Godot 4.3, the plugin in is in experimental mode and can change 
 
 [![Godot](https://img.shields.io/badge/Godot%20Engine-4.3-blue.svg)](https://github.com/godotengine/godot/)
-[![SwiftGodot]](https://github.com/migueldeicaza/SwiftGodot/)
+
+[SwiftGodot](https://github.com/migueldeicaza/SwiftGodot/)
 
 # Supported Platforms
 
