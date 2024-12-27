@@ -1,6 +1,6 @@
 //
 //  GameCenterPlayerLocal.swift
-//  SwiftGodotIosPlugin
+//  SwiftGodotIosPlugins
 //
 //  Created by ZT Pawer on 12/26/24.
 //
@@ -10,7 +10,8 @@ import SwiftGodot
 
 /// Holds local player data in a Godot friendly format
 @Godot
-class GameCenterPlayerLocal: RefCounted {
+class GameCenterPlayerLocal: Object {
+    
     @Export var alias: String = ""
     @Export var displayName: String = ""
 
@@ -30,6 +31,7 @@ class GameCenterPlayerLocal: RefCounted {
         teamPlayerID = player.teamPlayerID
         isUnderage = player.isUnderage
         isMultiplayerGamingRestricted = player.isMultiplayerGamingRestricted
-        isPersonalizedCommunicationRestricted = player.isPersonalizedCommunicationRestricted
+        isPersonalizedCommunicationRestricted =
+            player.isPersonalizedCommunicationRestricted
     }
 }

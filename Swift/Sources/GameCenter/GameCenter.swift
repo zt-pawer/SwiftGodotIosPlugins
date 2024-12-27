@@ -1,17 +1,21 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+//
+//  GameCenterViewController.swift
+//  SwiftGodotIosPlugins
+//
+//  Created by ZT Pawer on 12/26/24.
+//
+
 import GameKit
 import SwiftGodot
 
 #if canImport(UIKit)
-import UIKit
+    import UIKit
 #endif
 
 #initSwiftExtension(
     cdecl: "gamecenter",
     types: [
         GameCenter.self,
-        GameCenterPlayer.self,
         GameCenterPlayerLocal.self,
     ]
 )
@@ -27,31 +31,36 @@ class GameCenter: RefCounted {
         case failedToLoadPicture = 8
     }
     
+    @Signal var signinSuccess: SignalWithArguments<GameCenterPlayerLocal>
+    @Signal var signinFail: SignalWithArguments<String>
+    
     #if canImport(UIKit)
         var viewController: GameCenterViewController =
             GameCenterViewController()
     #endif
 
     static var instance: GameCenter?
-    var player: GameCenterPlayer?
+    var player: GameCenterPlayerLocal?
 
     required init() {
+        super.init()
         GameCenter.instance = self
     }
 
     required init(nativeHandle: UnsafeRawPointer) {
+        super.init()
         GameCenter.instance = self
     }
-    
+
     // MARK: Authentication
     /// Authenticate with gameCenter.
     ///
     /// - Parameters:
     ///     - onComplete: Callback with parameter: (error: Variant, data: Variant) -> (error: Int, data: ``GameCenterPlayerLocal``)
     @Callable
-    public func authenticate(onComplete: Callable = Callable()) {
+    public func authenticate() {
         if GKLocalPlayer.local.isAuthenticated && self.player != nil {
-            onComplete.call(Variant(GameCenterError.ok.rawValue), Variant(self.player!))
+            signinSuccess.emit(self.player!)
             return
         }
 
@@ -65,19 +74,15 @@ class GameCenter: RefCounted {
                 }
 
                 guard error == nil else {
-                    GD.pushError("Failed to authenticate \(error)")
-                    onComplete.callDeferred(
-                        Variant(GameCenterError.failedToAuthenticate.rawValue),
-                        Variant())
+                    self.signinFail.emit("Failed to authenticate \(error)")
                     return
                 }
 
-                var player = GameCenterPlayerLocal(GKLocalPlayer.local)
-                onComplete.callDeferred(Variant(GameCenterError.ok.rawValue), Variant(player))
+                self.player = GameCenterPlayerLocal(GKLocalPlayer.local)
+                self.signinSuccess.emit(self.player!)
             }
         #else
-            GD.pushWarning("GameCenter not available on this platform")
-            onComplete.call(Variant(GameCenterError.notAvailable.rawValue))
+            signinFail.emit("GameCenter not available on this platform")
         #endif
     }
 
@@ -89,12 +94,6 @@ class GameCenter: RefCounted {
         #else
             return false
         #endif
-    }
-
-    /// @Callable
-    @Callable
-    func logOut() {
-        GKLocalPlayer.local.logOut()
     }
 
 }

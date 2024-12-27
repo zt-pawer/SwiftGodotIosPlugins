@@ -21,7 +21,7 @@ CONFIG=$2
 PLATFORM=$3
 
 if [[ ! $PACKAGE ]]; then
-    PACKAGE="SwiftGodotGamecenter"
+    PACKAGE="GameCenter"
 fi
 
 if [[ ! $CONFIG ]]; then

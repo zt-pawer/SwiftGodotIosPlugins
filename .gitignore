@@ -60,3 +60,25 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# Additional ignore
+.DS_Store
+DerivedData/
+Swift/.netrc
+Swift/.swiftpm
+Swift/Bin
+Swift/Package.resolved
+
+# Godot
+Godot/.godot
+Godot/export_presets.cfg
+Export/
+Godot/addons/iosplugins/ios
+Godot/addons/iosplugins/macos
+*.import
+
+# Local
+Local
+
+# Zig
+.zig-cache
