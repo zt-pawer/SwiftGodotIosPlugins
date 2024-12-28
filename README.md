@@ -15,7 +15,7 @@ SwiftGodotGameCenter is built on the GDExtension framework, which is still in an
 
 # Technical details
 
-## Signal
+## Signals
 ### Authorization
 - `signin_success` SignalWithArguments<GameCenterPlayerLocal>
 - `signin_fail` SignalWithArguments<Int,String>
