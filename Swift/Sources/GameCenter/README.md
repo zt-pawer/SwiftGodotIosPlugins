@@ -21,6 +21,8 @@
 - `achievements_description_fail` SignalWithArguments<Int,String>
 - `achievements_report_success` SimpleSignal
 - `achievements_report_fail` SignalWithArguments<Int,String>
+- `achievements_load_success` SignalWithArguments<[GameCenterAchievement]>
+- `achievements_load_fail` SignalWithArguments<Int,String>
 - `achievements_reset_success` SimpleSignal
 - `achievements_reset_fail` SignalWithArguments<Int,String>
 ## Methods
@@ -29,6 +31,7 @@
 - `authenticate()` - Performs user authentication.  
 - `is_authenticated()` - Returns authentication state.  
 ### Achievements
-- `loadAchievementaDescription()` - Load all achievement descriptions.
-- `reportAchievements()` - Report an array of achievements to the server.
+- `loadAchievementDescriptions()` - Load all achievement descriptions.
+- `reportAchievements()` - Report an array of achievements.
+- `loadAchievements()` - Update the progress of achievements.
 - `resetAchievements()` - Reset the achievements progress for the local player.
