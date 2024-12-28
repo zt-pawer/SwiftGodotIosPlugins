@@ -15,7 +15,8 @@ macOS is in scope, but not a priority.
 
 # Development Status
 
-SwiftGodotGameCenter is built on the GDExtension framework, which is still in an [experimental](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/what_is_gdextension.html#differences-between-gdextension-and-c-modules) state, and consequently SwiftGodotGameCenter is still in an experimental state. Compatibility may break in order to fix major bugs or include critical features.
+SwiftGodotGameCenter is built on the GDExtension framework, which is still in an [experimental](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/what_is_gdextension.html#differences-between-gdextension-and-c-modules) state, and consequently SwiftGodotGameCenter is still in an experimental state. 
+This plugin compatibility may break.
 
 # Technical details
 
