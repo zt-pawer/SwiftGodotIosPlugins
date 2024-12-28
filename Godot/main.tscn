@@ -58,6 +58,12 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Complete Achievements"
 
+[node name="AchievementLoadButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Load Achievements"
+
 [node name="AchievementResetButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
@@ -73,4 +79,5 @@ autowrap_mode = 2
 [connection signal="pressed" from="VBoxContainer/ConnectButton" to="." method="_on_connect_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/AchievementListButton" to="." method="_on_achievement_list_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/AchievementProgressButton" to="." method="_on_achievement_progress_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/AchievementLoadButton" to="." method="_on_achievement_load_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/AchievementResetButton" to="." method="_on_achievement_reset_button_pressed"]

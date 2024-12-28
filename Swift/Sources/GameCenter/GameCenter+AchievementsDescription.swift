@@ -28,7 +28,7 @@ extension GameCenter {
                         GameCenterAchievementDescription(description))
                 }
                 self.debugger.emit(
-                    "Loaded \(achievementDestriptions.count) achievements")
+                    "Loaded \(achievementDestriptions.count) achievement descriptions")
                 self.achievementsDescriptionSuccess.emit(
                     achievementDestriptions)
 

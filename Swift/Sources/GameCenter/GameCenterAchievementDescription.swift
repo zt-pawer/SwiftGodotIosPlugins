@@ -51,7 +51,7 @@ class GameCenterAchievementDescription: Object {
         self.init()
 
         self.identifier = description.identifier
-        self.groupIdentifier = description.groupIdentifier
+        self.groupIdentifier = description.groupIdentifier ?? ""
         self.title = description.title
 
         self.unachievedDescription = description.unachievedDescription

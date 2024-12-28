@@ -25,17 +25,17 @@ import SwiftGodot
 
 @Godot
 class GameCenter: RefCounted {
-    
+
     @Signal var debugger: SignalWithArguments<String>
-    
+
     // MARK: Authentication
     /// @Signal
     /// Player is successfully authenticated on GameCenter
     @Signal var signinSuccess: SignalWithArguments<GameCenterPlayerLocal>
     /// @Signal
     /// Error suring the signing process
-    @Signal var signinFail: SignalWithArguments<Int,String>
-    
+    @Signal var signinFail: SignalWithArguments<Int, String>
+
     // MARK: Achievements
     /// @Signal
     /// Achievement(s) have been successfully reported
@@ -50,12 +50,20 @@ class GameCenter: RefCounted {
     /// Error reporting the achievements
     @Signal var achievementsResetFail: SignalWithArguments<Int, String>
     /// @Signal
+    /// Achievements have been successfully loaded
+    @Signal var achievementsLoadSuccess:
+        SignalWithArguments<ObjectCollection<GameCenterAchievement>>
+    /// @Signal
+    /// Error loading the achievements
+    @Signal var achievementsLoadFail: SignalWithArguments<Int, String>
+    /// @Signal
     /// Achievement(s) have been successfully reported
-    @Signal var achievementsDescriptionSuccess: SignalWithArguments<ObjectCollection<GameCenterAchievementDescription>>
+    @Signal var achievementsDescriptionSuccess:
+        SignalWithArguments<ObjectCollection<GameCenterAchievementDescription>>
     /// @Signal
     /// Error reporting the achievements
     @Signal var achievementsDescriptionFail: SignalWithArguments<Int, String>
-    
+
     enum GameCenterError: Int, Error {
         case unknownError = 1
         case notAuthenticated = 2
@@ -64,7 +72,7 @@ class GameCenter: RefCounted {
         case failedToLoadPicture = 5
         case missingIdentifier = 6
     }
-    
+
     #if canImport(UIKit)
         var viewController: GameCenterViewController =
             GameCenterViewController()
@@ -82,7 +90,7 @@ class GameCenter: RefCounted {
         super.init()
         GameCenter.instance = self
     }
-    
+
     // MARK: Authentication
     /// @Callable
     ///
@@ -95,7 +103,7 @@ class GameCenter: RefCounted {
     public func authenticate() {
         authenticateInternal()
     }
-    
+
     /// @Callable
     ///
     /// - Returns:
@@ -104,7 +112,7 @@ class GameCenter: RefCounted {
     func isAuthenticated() -> Bool {
         return isAuthenticatedInternal()
     }
-   
+
     // MARK: Achievements
     /// @Callable
     ///
@@ -123,7 +131,7 @@ class GameCenter: RefCounted {
     ) {
         reportAchievementsInternal(achievements)
     }
-    
+
     /// @Callable
     /// Reset the achievements progress for the local player. All the entries for the local player are removed from the server. Error will be nil on success.
     /// Possible reasons for error:
@@ -137,7 +145,19 @@ class GameCenter: RefCounted {
     func resetAchievements() {
         resetAchievementsInternal()
     }
-    
+
+    /// @Callable
+    ///
+    /// Load all achievements for the local player
+    ///
+    /// - Signals:
+    ///     - achievements_load_success: the list of achievements for the local player with the signal
+    ///     - achievements_load_fail: an error message is associated with the signal
+    @Callable
+    func loadAchievements() {
+        loadAchievementsInternal()
+    }
+
     /// @Callable
     /// Load all achievement descriptions
     ///
@@ -145,7 +165,7 @@ class GameCenter: RefCounted {
     ///     - achievements_description_success: the list of description is associated with the signal
     ///     - achievements_descritpion_fail: an error message is associated with the signal
     @Callable
-    func loadAchievementaDescription() {
+    func loadAchievementDescriptions() {
         loadAchievementDescriptionsInternal()
     }
 }

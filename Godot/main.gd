@@ -2,6 +2,7 @@ extends Control
 
 var _gamecenter: Variant
 var _achievements: Dictionary = {}
+var _achievementDescriptions: Dictionary = {}
 
 @onready var status_label: Label = $VBoxContainer/StatusLabel
 
@@ -15,6 +16,8 @@ func _ready() -> void:
 		_gamecenter.achievements_description_fail.connect(on_achievements_description_fail)
 		_gamecenter.achievements_report_success.connect(on_achievements_report_success)
 		_gamecenter.achievements_report_fail.connect(on_achievements_report_fail)
+		_gamecenter.achievements_load_success.connect(on_achievements_load_success)
+		_gamecenter.achievements_load_fail.connect(on_achievements_load_fail)
 		_gamecenter.achievements_reset_success.connect(on_achievements_reset_success)
 		_gamecenter.achievements_reset_fail.connect(on_achievements_reset_fail)
 		_gamecenter.debugger.connect(_on_debugger)
@@ -36,10 +39,10 @@ func on_achievements_description_fail(error: int, message: String) -> void:
 
 
 func on_achievements_description_success(achievements: Array[GameCenterAchievementDescription]) -> void:
-	status_label.text = "Achievements received"
+	status_label.text = "Achievement descriptions received"
 	for achievement in achievements:
 		status_label.text = "%s - %s - %s" % [achievement.identifier, achievement.title, achievement.unachievedDescription]
-		_achievements[achievement.identifier] = achievement
+		_achievementDescriptions[achievement.identifier] = achievement
 
 
 func on_achievements_report_fail(error: int, message: String) -> void:
@@ -48,6 +51,17 @@ func on_achievements_report_fail(error: int, message: String) -> void:
 
 func on_achievements_report_success() -> void:
 	status_label.text = "Achievements progresses reported"
+
+
+func on_achievements_load_fail(error: int, message: String) -> void:
+	status_label.text = message
+
+
+func on_achievements_load_success(achievements: Array[GameCenterAchievement]) -> void:
+	status_label.text = "Achievements received"
+	for achievement in achievements:
+		status_label.text = "%s - %s - %d" % [achievement.identifier, str(achievement.isCompleted), achievement.percentComplete]
+		_achievements[achievement.identifier] = achievement
 
 
 func on_achievements_reset_fail(error: int, message: String) -> void:
@@ -63,19 +77,22 @@ func _on_connect_button_pressed() -> void:
 
 
 func _on_achievement_list_button_pressed() -> void:
-	_gamecenter.loadAchievementaDescription()
+	_gamecenter.loadAchievementDescriptions()
 
 
 func _on_achievement_progress_button_pressed() -> void:
 	var achievements: Array[GameCenterAchievement] = []
-	for achievementIdentifier in _achievements:
+	for achievementIdentifier in _achievementDescriptions:
 		var achievement: GameCenterAchievement = GameCenterAchievement.new()
 		achievement.identifier = achievementIdentifier
 		achievement.percentComplete = 100.0
 		achievement.showsCompletionBanner = true
 		achievements.append(achievement)
-#
 	_gamecenter.reportAchievements(achievements)
+
+
+func _on_achievement_load_button_pressed() -> void:
+	_gamecenter.loadAchievements()
 
 
 func _on_achievement_reset_button_pressed() -> void:
