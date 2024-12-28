@@ -31,7 +31,10 @@ class GameCenter: RefCounted {
         case failedToLoadPicture = 8
     }
     
+    // MARK: Signals
+    /// Player is successfully authenticated on GameCenter
     @Signal var signinSuccess: SignalWithArguments<GameCenterPlayerLocal>
+    /// Error suring the signing process
     @Signal var signinFail: SignalWithArguments<String>
     
     #if canImport(UIKit)
@@ -55,8 +58,9 @@ class GameCenter: RefCounted {
     // MARK: Authentication
     /// Authenticate with gameCenter.
     ///
-    /// - Parameters:
-    ///     - onComplete: Callback with parameter: (error: Variant, data: Variant) -> (error: Int, data: ``GameCenterPlayerLocal``)
+    /// - Signals:
+    ///     - signin_success: an instance of the GameCenterPlayerLocal is associated with the signal
+    ///     - signin_fail: an error message is associated with the signal
     @Callable
     public func authenticate() {
         if GKLocalPlayer.local.isAuthenticated && self.player != nil {
@@ -87,7 +91,9 @@ class GameCenter: RefCounted {
     }
 
     /// @Callable
-    /// A Boolean value that indicates whether a local player has signed in to Game Center.
+    ///
+    /// - Returns:
+    ///     - A Boolean value that indicates whether a local player has signed in to Game Center.
     func isAuthenticated() -> Bool {
         #if os(iOS)
             return GKLocalPlayer.local.isAuthenticated
@@ -95,5 +101,4 @@ class GameCenter: RefCounted {
             return false
         #endif
     }
-
 }
