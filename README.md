@@ -8,8 +8,6 @@ This is a Swift implementation using the [SwiftGodot](https://github.com/migueld
 [![Swift](https://img.shields.io/badge/Swift-5.9.1-blue.svg)](https://www.swift.org/)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://github.com/zt-pawer/SwiftGodotGameCenter/blob/main/LICENSE)
 
-[![Become a patreon](https://github.com/zt-pawer/SwiftGodotGameCenter/blob/main/.github/Become-a-patron-button.png)](https://patreon.com/ztpawer)
-
 # Supported Platforms
 
 Currently, SwiftGodotGameCenter can be used in projects targeting the iOS platforms. 
@@ -41,3 +39,12 @@ SwiftGodotGameCenter is built on the GDExtension framework, which is still in an
 - `loadAchievementaDescription()` - Load all achievement descriptions.
 - `reportAchievements()` - Report an array of achievements to the server.
 - `resetAchievements()` - Reset the achievements progress for the local player.
+
+# Contributing
+
+Have a bug fix or feature request you'd like to see added? Consider contributing!
+[How to contribute](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project)
+
+# Donate and support
+
+[![Become a patreon](https://github.com/zt-pawer/SwiftGodotGameCenter/blob/main/.github/Become-a-patron-button.png)](https://patreon.com/ztpawer)
