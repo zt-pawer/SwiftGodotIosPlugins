@@ -26,6 +26,9 @@ Currently, SwiftGodotPlugins can be used in projects targeting the iOS platforms
 
 SwiftGodotPlugins is built on the GDExtension framework, which is still in an [experimental](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/what_is_gdextension.html#differences-between-gdextension-and-c-modules) state, and consequently SwiftGodotPlugins is still in an experimental state. 
 
+# How to use it
+[TODO]
+
 # Technical details
 - [GameCenter](Swift/Sources/GameCenter/README.md)
 
