@@ -1,3 +1,17 @@
+[![Godot](https://img.shields.io/badge/Godot%20Engine-4.3-blue.svg)](https://github.com/godotengine/godot/)
+[![SwiftGodot](https://img.shields.io/badge/SwiftGodot-main-blue.svg)](https://github.com/migueldeicaza/SwiftGodot/)
+![Platforms](https://img.shields.io/badge/platforms-iOS-333333.svg?style=flat)
+![iOS](https://img.shields.io/badge/iOS-17+-green.svg?style=flat)
+[![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://github.com/zt-pawer/SwiftGodotGameCenter/blob/main/LICENSE)
+
+# Development status
+[TODO]
+
+# How to use it
+[TODO]
+
+# Technical details
+
 ## Signals
 ### Authorization
 - `signin_success` SignalWithArguments<GameCenterPlayerLocal>
