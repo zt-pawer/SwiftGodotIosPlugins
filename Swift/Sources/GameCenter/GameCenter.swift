@@ -16,26 +16,54 @@ import SwiftGodot
     cdecl: "gamecenter",
     types: [
         GameCenter.self,
+        GameCenterAchievement.self,
+        GameCenterAchievementDescription.self,
+        GameCenterPlayer.self,
         GameCenterPlayerLocal.self,
     ]
 )
 
 @Godot
 class GameCenter: RefCounted {
+    
+    @Signal var debugger: SignalWithArguments<String>
+    
+    // MARK: Authentication
+    /// @Signal
+    /// Player is successfully authenticated on GameCenter
+    @Signal var signinSuccess: SignalWithArguments<GameCenterPlayerLocal>
+    /// @Signal
+    /// Error suring the signing process
+    @Signal var signinFail: SignalWithArguments<Int,String>
+    
+    // MARK: Achievements
+    /// @Signal
+    /// Achievement(s) have been successfully reported
+    @Signal var achievementsReportSuccess: SimpleSignal
+    /// @Signal
+    /// Error reporting the achievements
+    @Signal var achievementsReportFail: SignalWithArguments<Int, String>
+    /// @Signal
+    /// Achievement(s) have been successfully reported
+    @Signal var achievementsResetSuccess: SimpleSignal
+    /// @Signal
+    /// Error reporting the achievements
+    @Signal var achievementsResetFail: SignalWithArguments<Int, String>
+    /// @Signal
+    /// Achievement(s) have been successfully reported
+    @Signal var achievementsDescriptionSuccess: SignalWithArguments<ObjectCollection<GameCenterAchievementDescription>>
+    /// @Signal
+    /// Error reporting the achievements
+    @Signal var achievementsDescriptionFail: SignalWithArguments<Int, String>
+    
     enum GameCenterError: Int, Error {
-        case ok = 0
         case unknownError = 1
         case notAuthenticated = 2
         case notAvailable = 3
         case failedToAuthenticate = 4
-        case failedToLoadPicture = 8
+        case failedToLoadPicture = 5
+        case missingIdentifier = 6
     }
-    
-    // MARK: Signals
-    /// Player is successfully authenticated on GameCenter
-    @Signal var signinSuccess: SignalWithArguments<GameCenterPlayerLocal>
-    /// Error suring the signing process
-    @Signal var signinFail: SignalWithArguments<String>
     
     #if canImport(UIKit)
         var viewController: GameCenterViewController =
@@ -54,8 +82,10 @@ class GameCenter: RefCounted {
         super.init()
         GameCenter.instance = self
     }
-
+    
     // MARK: Authentication
+    /// @Callable
+    ///
     /// Authenticate with gameCenter.
     ///
     /// - Signals:
@@ -63,42 +93,59 @@ class GameCenter: RefCounted {
     ///     - signin_fail: an error message is associated with the signal
     @Callable
     public func authenticate() {
-        if GKLocalPlayer.local.isAuthenticated && self.player != nil {
-            signinSuccess.emit(self.player!)
-            return
-        }
-
-        #if os(iOS)
-            GKLocalPlayer.local.authenticateHandler = {
-                loginController, error in
-                guard loginController == nil else {
-                    self.viewController.getRootController()?.present(
-                        loginController!, animated: true)
-                    return
-                }
-
-                guard error == nil else {
-                    self.signinFail.emit("Failed to authenticate \(error)")
-                    return
-                }
-
-                self.player = GameCenterPlayerLocal(GKLocalPlayer.local)
-                self.signinSuccess.emit(self.player!)
-            }
-        #else
-            signinFail.emit("GameCenter not available on this platform")
-        #endif
+        authenticateInternal()
     }
-
+    
     /// @Callable
     ///
     /// - Returns:
     ///     - A Boolean value that indicates whether a local player has signed in to Game Center.
+    @Callable
     func isAuthenticated() -> Bool {
-        #if os(iOS)
-            return GKLocalPlayer.local.isAuthenticated
-        #else
-            return false
-        #endif
+        return isAuthenticatedInternal()
+    }
+   
+    // MARK: Achievements
+    /// @Callable
+    ///
+    /// Report an array of achievements to the server. Percent complete is required. Points, completed state are set based on percentComplete. isHidden is set to NO anytime this method is invoked. Date is optional. Error will be nil on success.
+    /// Possible reasons for error:
+    /// 1. Local player not authenticated
+    /// 2. Communications failure
+    /// 3. Reported Achievement does not exist
+    ///
+    /// - Signals:
+    ///     - achievements_report_success: a signal with no parameters is raised
+    ///     - achievements_report_fail: an error message is associated with the signal
+    @Callable
+    func reportAchievements(
+        _ achievements: [GameCenterAchievement]
+    ) {
+        reportAchievementsInternal(achievements)
+    }
+    
+    /// @Callable
+    /// Reset the achievements progress for the local player. All the entries for the local player are removed from the server. Error will be nil on success.
+    /// Possible reasons for error:
+    /// 1. Local player not authenticated
+    /// 2. Communications failure
+    ///
+    /// - Signals:
+    ///     - achievements_reset_success: a signal with no parameters is raised
+    ///     - achievements_reset_fail: an error message is associated with the signal
+    @Callable
+    func resetAchievements() {
+        resetAchievementsInternal()
+    }
+    
+    /// @Callable
+    /// Load all achievement descriptions
+    ///
+    /// - Signals:
+    ///     - achievements_description_success: the list of description is associated with the signal
+    ///     - achievements_descritpion_fail: an error message is associated with the signal
+    @Callable
+    func loadAchievementaDescription() {
+        loadAchievementDescriptionsInternal()
     }
 }

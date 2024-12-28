@@ -8,7 +8,6 @@
 import GameKit
 import SwiftGodot
 
-/// Holds local player data in a Godot friendly format
 @Godot
 class GameCenterPlayerLocal: Object {
     

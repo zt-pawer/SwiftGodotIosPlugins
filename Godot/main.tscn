@@ -24,6 +24,13 @@ offset_right = 4.0
 offset_bottom = 4.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="LoginLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Login
+"
+horizontal_alignment = 1
 
 [node name="ConnectButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
@@ -31,8 +38,39 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Connect Game Center"
 
-[node name="StatusLabel" type="Label" parent="VBoxContainer"]
+[node name="HSeparatorAchievement" type="HSeparator" parent="VBoxContainer"]
 layout_mode = 2
+
+[node name="AchievementLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Achievements"
 horizontal_alignment = 1
 
+[node name="AchievementListButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "List Achievements"
+
+[node name="AchievementProgressButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Complete Achievements"
+
+[node name="AchievementResetButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Reset Achievements"
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [connection signal="pressed" from="VBoxContainer/ConnectButton" to="." method="_on_connect_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/AchievementListButton" to="." method="_on_achievement_list_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/AchievementProgressButton" to="." method="_on_achievement_progress_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/AchievementResetButton" to="." method="_on_achievement_reset_button_pressed"]
