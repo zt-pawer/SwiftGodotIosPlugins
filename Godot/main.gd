@@ -6,6 +6,8 @@ var _achievementDescriptions: Dictionary = {}
 
 @onready var status_label: Label = $VBoxContainer/StatusLabel
 
+var score: int = 0
+const leaderboardId = "leaderboard1"
 
 func _ready() -> void:
 	if _gamecenter == null && ClassDB.class_exists("GameCenter"):
@@ -20,6 +22,11 @@ func _ready() -> void:
 		_gamecenter.achievements_load_fail.connect(on_achievements_load_fail)
 		_gamecenter.achievements_reset_success.connect(on_achievements_reset_success)
 		_gamecenter.achievements_reset_fail.connect(on_achievements_reset_fail)
+		_gamecenter.leaderboard_score_success.connect(on_leaderboard_score_success)
+		_gamecenter.leaderboard_score_fail.connect(on_leaderboard_score_fail)
+		_gamecenter.leaderboard_success.connect(on_leaderboard_success)
+		_gamecenter.leaderboard_dismissed.connect(on_leaderboard_dismissed)
+		_gamecenter.leaderboard_fail.connect(on_leaderboard_fail)
 		_gamecenter.debugger.connect(_on_debugger)
 		status_label.text = "Plugin loaded"
 	else:
@@ -72,6 +79,26 @@ func on_achievements_reset_success() -> void:
 	status_label.text = "Achievements progresses reset"
 
 
+func on_leaderboard_score_fail(error: int, message: String) -> void:
+	status_label.text = message
+
+
+func on_leaderboard_score_success() -> void:
+	status_label.text = "Score %d reported" % score
+
+
+func on_leaderboard_fail(error: int, message: String) -> void:
+	status_label.text = message
+
+
+func on_leaderboard_dismissed() -> void:
+	status_label.text = "Leaderboard dismissed"
+
+
+func on_leaderboard_success() -> void:
+	status_label.text = "Leaderboard shown"
+
+
 func _on_connect_button_pressed() -> void:
 	_gamecenter.authenticate()
 
@@ -97,6 +124,21 @@ func _on_achievement_load_button_pressed() -> void:
 
 func _on_achievement_reset_button_pressed() -> void:
 	_gamecenter.resetAchievements()
+
+
+func _on_leaderboard_submit_button_pressed() -> void:
+	score += 1
+	var leaderboardIds : Array[String] = []
+	leaderboardIds.append(leaderboardId)
+	_gamecenter.submitScore(score, leaderboardIds, 0)
+
+
+func _on_achievement_show_button_pressed() -> void:
+	_gamecenter.showAchievements()
+
+
+func _on_leaderboard_show_button_pressed() -> void:
+	_gamecenter.showLeaderboards()
 
 
 func _on_debugger(message:String) ->void:

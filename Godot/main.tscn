@@ -70,6 +70,32 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 text = "Reset Achievements"
 
+[node name="AchievementShowButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Show achievements"
+
+[node name="HSeparatorLeaderboard" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="LeaderboardLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Achievements"
+horizontal_alignment = 1
+
+[node name="LeaderboardSubmitButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Submit score"
+
+[node name="LeaderboardShowButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Show leaderboard"
+
 [node name="StatusLabel" type="Label" parent="VBoxContainer"]
 custom_minimum_size = Vector2(500, 0)
 layout_mode = 2
@@ -81,3 +107,6 @@ autowrap_mode = 2
 [connection signal="pressed" from="VBoxContainer/AchievementProgressButton" to="." method="_on_achievement_progress_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/AchievementLoadButton" to="." method="_on_achievement_load_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/AchievementResetButton" to="." method="_on_achievement_reset_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/AchievementShowButton" to="." method="_on_achievement_show_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/LeaderboardSubmitButton" to="." method="_on_leaderboard_submit_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/LeaderboardShowButton" to="." method="_on_leaderboard_show_button_pressed"]

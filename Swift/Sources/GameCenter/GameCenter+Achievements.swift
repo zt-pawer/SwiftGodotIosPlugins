@@ -93,4 +93,43 @@ extension GameCenter {
         })
     }
 
+    func showAchievementsInternal() {
+        #if canImport(UIKit)
+            viewController.showUIController(
+                GKGameCenterViewController(state: .achievements),
+                completitionHandler: { status in
+                    switch status {
+                    case GameCenterUIState.success.rawValue:
+                        self.leaderboardSuccess.emit()
+                    case GameCenterUIState.dismissed.rawValue:
+                        self.leaderboardDismissed.emit()
+                    default:
+                        self.leaderboardFail.emit(GameCenterError.unknownError.rawValue, "Unknown error")
+                    }
+                })
+        #endif
+    }
+
+    func showAchievementInternal(achievementID: String) {
+        #if canImport(UIKit)
+            viewController.showUIController(
+                GKGameCenterViewController(
+                    achievementID: achievementID
+                ),
+                completitionHandler: { status in
+                    switch status {
+                    case GameCenterUIState.success.rawValue:
+                        self.leaderboardSuccess.emit()
+                    case GameCenterUIState.dismissed.rawValue:
+                        self.leaderboardDismissed.emit()
+                    default:
+                        self.leaderboardFail.emit(GameCenterError.unknownError.rawValue, "Unknown error")
+                    }
+                })
+        #else
+            leaderboardScoreFail.emit(
+                GameCenterError.notAvailable.rawValue, "Leaderboard not available")
+        #endif
+    }
+
 }

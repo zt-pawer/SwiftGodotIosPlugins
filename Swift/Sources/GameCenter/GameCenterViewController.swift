@@ -10,21 +10,34 @@
     import GameKit
     import UIKit
 
+    enum GameCenterUIState: Int {
+        case success = 1
+        case dismissed = 2
+        case error = 3
+    }
+
     class GameCenterViewController: UIViewController,
         GKGameCenterControllerDelegate
     {
-        var onControllerClosed: Callable? = nil
+        var onCompletitionHandler: ((Int) -> Void)?
 
         func showUIController(
-            _ viewController: GKGameCenterViewController, onClose: Callable?
+            _ viewController: GKGameCenterViewController,
+            completitionHandler: ((_ status: Int) -> Void)?
         ) {
             do {
-                onControllerClosed = onClose
+                onCompletitionHandler = completitionHandler
                 viewController.gameCenterDelegate = self
                 try getRootController()?.present(
-                    viewController, animated: true, completion: nil)
+                    viewController, animated: true,
+                    completion: {
+                        guard let completitionHandler else { return }
+                        completitionHandler(GameCenterUIState.success.rawValue)
+                    }
+                )
             } catch {
-                GD.pushError("Error: \(error).")
+                guard let completitionHandler else { return }
+                completitionHandler(GameCenterUIState.error.rawValue)
             }
         }
 
@@ -32,7 +45,12 @@
             _ gameCenterViewController: GKGameCenterViewController
         ) {
             gameCenterViewController.dismiss(
-                animated: true, completion: { self.onControllerClosed?.call() })
+                animated: true,
+                completion: { [self] in
+                    guard let onCompletitionHandler else { return }
+                    (self.onCompletitionHandler!)(
+                        GameCenterUIState.dismissed.rawValue)
+                })
         }
 
         func getRootController() -> UIViewController? {
@@ -40,8 +58,6 @@
         }
 
         func getMainWindow() -> UIWindow? {
-            // As seen on: https://sarunw.com/posts/how-to-get-root-view-controller/
-            // NOTE: Does not neccessarily show in the correct window if there are multiple windows
             return UIApplication.shared.connectedScenes
                 .compactMap { $0 as? UIWindowScene }
                 .filter { $0.activationState == .foregroundActive }

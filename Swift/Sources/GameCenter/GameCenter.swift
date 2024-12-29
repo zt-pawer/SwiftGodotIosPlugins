@@ -23,6 +23,15 @@ import SwiftGodot
     ]
 )
 
+enum GameCenterError: Int, Error {
+    case unknownError = 1
+    case notAuthenticated = 2
+    case notAvailable = 3
+    case failedToAuthenticate = 4
+    case failedToLoadPicture = 5
+    case missingIdentifier = 6
+}
+
 @Godot
 class GameCenter: RefCounted {
 
@@ -63,15 +72,21 @@ class GameCenter: RefCounted {
     /// @Signal
     /// Error reporting the achievements
     @Signal var achievementsDescriptionFail: SignalWithArguments<Int, String>
-
-    enum GameCenterError: Int, Error {
-        case unknownError = 1
-        case notAuthenticated = 2
-        case notAvailable = 3
-        case failedToAuthenticate = 4
-        case failedToLoadPicture = 5
-        case missingIdentifier = 6
-    }
+    /// @Signal
+    /// Score(s) have been successfully reported
+    @Signal var leaderboardScoreSuccess: SimpleSignal
+    /// @Signal
+    /// Error reporting the score
+    @Signal var leaderboardScoreFail: SignalWithArguments<Int, String>
+    /// @Signal
+    /// Leaderboard has been shown
+    @Signal var leaderboardSuccess: SimpleSignal
+    /// @Signal
+    /// Leaderboard had been dismissed
+    @Signal var leaderboardDismissed: SimpleSignal
+    /// @Signal
+    /// Error showing the leaderboard
+    @Signal var leaderboardFail: SignalWithArguments<Int, String>
 
     #if canImport(UIKit)
         var viewController: GameCenterViewController =
@@ -167,5 +182,76 @@ class GameCenter: RefCounted {
     @Callable
     func loadAchievementDescriptions() {
         loadAchievementDescriptionsInternal()
+    }
+
+    /// Show GameCenter leaderboard display.
+    ///
+    /// - Signals:
+    ///     - leaderboard_shown: a signal with no parameters is raised
+    ///     - leaderboard_dismissed: a signal with no parameters is raised
+    ///     - leaderboard_fail: an error message is associated with the signal
+    @Callable
+    func showAchievements() {
+        showAchievementsInternal()
+    }
+
+    /// Show GameCenter leaderboard for a specific achievement.
+    ///
+    /// - Parameters:
+    ///     - leaderboardID: The identifier for the leaderboard that you enter in App Store Connect.
+    ///
+    /// - Signals:
+    ///     - leaderboard_shown: a signal with no parameters is raised
+    ///     - leaderboard_dismissed: a signal with no parameters is raised
+    ///     - leaderboard_fail: an error message is associated with the signal
+    @Callable
+    func showAchievement(achievementID: String) {
+        showAchievementInternal(achievementID: achievementID)
+    }
+
+    // MARK: Leaderboards
+    /// @Callable
+    ///
+    /// Instance method to submit a single score to the leaderboard associated with this instance
+    ///   score - earned by the player
+    ///   leaderboardIds - to which the score should be submitted
+    ///   context - developer supplied metadata associated with the player's score
+    ///
+    /// - Signals:
+    ///     - achievements_report_success: a signal with no parameters is raised
+    ///     - achievements_report_fail: an error message is associated with the signal
+    @Callable
+    func submitScore(
+        score: Int, leaderboardIDs: [String], context: Int
+    ) {
+        submitScoreInternal(
+            score, context: context,
+            player: GKLocalPlayer.local,
+            leaderboardIDs: leaderboardIDs)
+    }
+
+    /// Show GameCenter leaderboards display.
+    ///
+    /// - Signals:
+    ///     - leaderboard_shown: a signal with no parameters is raised
+    ///     - leaderboard_dismissed: a signal with no parameters is raised
+    ///     - leaderboard_fail: an error message is associated with the signal
+    @Callable
+    func showLeaderboards() {
+        showLeaderboardsInternal()
+    }
+
+    /// Show GameCenter leaderboard for a specific leaderboard.
+    ///
+    /// - Parameters:
+    ///     - leaderboardID: The identifier for the leaderboard that you enter in App Store Connect.
+    ///
+    /// - Signals:
+    ///     - leaderboard_shown: a signal with no parameters is raised
+    ///     - leaderboard_dismissed: a signal with no parameters is raised
+    ///     - leaderboard_fail: an error message is associated with the signal
+    @Callable
+    func showLeaderboard(leaderboardID: String) {
+        showLeaderboardInternal(leaderboardID: leaderboardID)
     }
 }
