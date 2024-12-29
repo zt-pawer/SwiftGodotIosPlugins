@@ -48,6 +48,7 @@ func _on_achievements_load_fail(error: int, message: String) -> void:
 func _on_achievements_load_success(achievements: Array[GameCenterAchievement]) -> void:
 func _on_achievements_reset_fail(error: int, message: String) -> void:
 func _on_achievements_reset_success() -> void:
+func _on_leaderboard_score_success() -> void:
 func _on_leaderboard_score_fail(error: int, message: String) -> void:
 func _on_leaderboard_dismissed() -> void:
 func _on_leaderboard_success() -> void:
