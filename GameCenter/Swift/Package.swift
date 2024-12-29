@@ -13,7 +13,7 @@ let package = Package(
             targets: ["GameCenter"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main")
+        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "9c15f48d1529a0499208c1678b35f8993691c9f1")
     ],
     targets: [
         .target(
