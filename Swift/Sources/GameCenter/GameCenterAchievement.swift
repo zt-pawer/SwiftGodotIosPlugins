@@ -36,7 +36,6 @@ class GameCenterAchievement: Object {
 
     convenience init(_ achievement: GKAchievement) {
         self.init()
-
         self.identifier = achievement.identifier
         self.player = GameCenterPlayer(achievement.player)
         self.isCompleted = achievement.isCompleted

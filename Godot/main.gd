@@ -1,6 +1,6 @@
 extends Control
 
-var _gamecenter: Variant
+var _gamecenter: GameCenter
 var _achievements: Dictionary = {}
 var _achievementDescriptions: Dictionary = {}
 

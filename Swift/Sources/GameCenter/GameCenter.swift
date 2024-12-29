@@ -33,7 +33,7 @@ enum GameCenterError: Int, Error {
 }
 
 @Godot
-class GameCenter: RefCounted {
+class GameCenter: Object {
 
     @Signal var debugger: SignalWithArguments<String>
 

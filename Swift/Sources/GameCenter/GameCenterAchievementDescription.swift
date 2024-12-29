@@ -14,54 +14,41 @@ class GameCenterAchievementDescription: Object {
     /// @Export
     /// Achievement identifier
     @Export var identifier: String = ""
-    // MARK: Export
     /// @Export
     ///The group identifier for the achievement, if one exists.
     @Export var groupIdentifier: String = ""
-    // MARK: Export
     /// @Export
     /// The title of the achievement.
     @Export var title: String = ""
-    // MARK: Export
     /// @Export
     /// The description for an unachieved achievement.
     @Export var unachievedDescription: String = ""
-    // MARK: Export
     /// @Export
     /// The description for an achieved achievement.
     @Export var achievedDescription: String = ""
-    // MARK: Export
     /// @Export
     /// Maximum points available for completing this achievement.
     @Export var maximumPoints: Int = 0
-    // MARK: Export
     /// @Export
     /// Whether or not the achievement should be listed or displayed if not yet unhidden by the game.
     @Export var isHidden: Bool = false
-    // MARK: Export
     /// @Export
     /// Whether or not the achievement will be reported by the game when the user earns it again. This allows the achievement to be used for challenges when the recipient has previously earned it.
     @Export var isReplayable: Bool = false
-    // MARK: Export
     /// @Export
     /// Achievement identifier
     @Export var rarityPercent: Double = 0
     
     convenience init(_ description: GKAchievementDescription) {
         self.init()
-
         self.identifier = description.identifier
         self.groupIdentifier = description.groupIdentifier ?? ""
         self.title = description.title
-
         self.unachievedDescription = description.unachievedDescription
         self.achievedDescription = description.achievedDescription
-
         self.maximumPoints = description.maximumPoints
-
         self.isHidden = description.isHidden
         self.isReplayable = description.isReplayable
-
         if #available(iOS 17, macOS 14, *), let rarityPercent = description.rarityPercent {
             self.rarityPercent = rarityPercent
         }
