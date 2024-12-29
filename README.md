@@ -39,4 +39,5 @@ Have a bug fix or feature request you'd like to see added? Consider contributing
 
 # Donate and support
 
-[![Become a patreon](https://github.com/zt-pawer/SwiftGodotGameCenter/blob/main/.github/Become-a-patron-button.png)](https://patreon.com/ztpawer)
+[![Buy me a coffee](.github/bmc-button.png)](https://buymeacoffee.com/ztpawer)
+[![Become a patreon](.github/patreon-button.png)](https://patreon.com/ztpawer)
