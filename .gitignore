@@ -62,20 +62,21 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 # Additional ignore
-.DS_Store
-DerivedData/
-Swift/.netrc
-Swift/.swiftpm
-Swift/Bin
-Swift/Package.resolved
+**/.DS_Store
+**/DerivedData/
+**/Swift/.netrc
+**/Swift/.swiftpm
+**/Swift/Bin
+**/Swift/Package.resolved
+**/*.code-workspace
 
 # Godot
-Godot/.godot
-Godot/export_presets.cfg
-Export/
-Godot/addons/iosplugins/ios
-Godot/addons/iosplugins/macos
-*.import
+**/Godot/.godot
+**/Godot/export_presets.cfg
+**/Export/
+**/Godot/addons/iosplugins/ios
+**/Godot/addons/iosplugins/macos
+**/*.import
 
 # Local
 Local

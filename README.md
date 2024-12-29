@@ -30,7 +30,7 @@ SwiftGodotPlugins is built on the GDExtension framework, which is still in an [e
 [TODO]
 
 # Technical details
-- [GameCenter](Swift/Sources/GameCenter/README.md)
+- [GameCenter](GameCenter/README.md)
 
 # Contributing
 
