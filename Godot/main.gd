@@ -14,19 +14,19 @@ func _ready() -> void:
 		_gamecenter = ClassDB.instantiate("GameCenter")
 		_gamecenter.signin_success.connect(_on_signin_success)
 		_gamecenter.signin_fail.connect(_on_signin_fail)
-		_gamecenter.achievements_description_success.connect(on_achievements_description_success)
-		_gamecenter.achievements_description_fail.connect(on_achievements_description_fail)
-		_gamecenter.achievements_report_success.connect(on_achievements_report_success)
-		_gamecenter.achievements_report_fail.connect(on_achievements_report_fail)
-		_gamecenter.achievements_load_success.connect(on_achievements_load_success)
-		_gamecenter.achievements_load_fail.connect(on_achievements_load_fail)
-		_gamecenter.achievements_reset_success.connect(on_achievements_reset_success)
-		_gamecenter.achievements_reset_fail.connect(on_achievements_reset_fail)
-		_gamecenter.leaderboard_score_success.connect(on_leaderboard_score_success)
-		_gamecenter.leaderboard_score_fail.connect(on_leaderboard_score_fail)
-		_gamecenter.leaderboard_success.connect(on_leaderboard_success)
-		_gamecenter.leaderboard_dismissed.connect(on_leaderboard_dismissed)
-		_gamecenter.leaderboard_fail.connect(on_leaderboard_fail)
+		_gamecenter.achievements_description_success.connect(_on_achievements_description_success)
+		_gamecenter.achievements_description_fail.connect(_on_achievements_description_fail)
+		_gamecenter.achievements_report_success.connect(_on_achievements_report_success)
+		_gamecenter.achievements_report_fail.connect(_on_achievements_report_fail)
+		_gamecenter.achievements_load_success.connect(_on_achievements_load_success)
+		_gamecenter.achievements_load_fail.connect(_on_achievements_load_fail)
+		_gamecenter.achievements_reset_success.connect(_on_achievements_reset_success)
+		_gamecenter.achievements_reset_fail.connect(_on_achievements_reset_fail)
+		_gamecenter.leaderboard_score_success.connect(_on_leaderboard_score_success)
+		_gamecenter.leaderboard_score_fail.connect(_on_leaderboard_score_fail)
+		_gamecenter.leaderboard_success.connect(_on_leaderboard_success)
+		_gamecenter.leaderboard_dismissed.connect(_on_leaderboard_dismissed)
+		_gamecenter.leaderboard_fail.connect(_on_leaderboard_fail)
 		_gamecenter.debugger.connect(_on_debugger)
 		status_label.text = "Plugin loaded"
 	else:
@@ -41,61 +41,61 @@ func _on_signin_success(player: GameCenterPlayerLocal) -> void:
 	status_label.text = "Signin success %s" % player.alias
 
 
-func on_achievements_description_fail(error: int, message: String) -> void:
+func _on_achievements_description_fail(error: int, message: String) -> void:
 	status_label.text = message
 
 
-func on_achievements_description_success(achievements: Array[GameCenterAchievementDescription]) -> void:
+func _on_achievements_description_success(achievements: Array[GameCenterAchievementDescription]) -> void:
 	status_label.text = "Achievement descriptions received"
 	for achievement in achievements:
 		status_label.text = "%s - %s - %s" % [achievement.identifier, achievement.title, achievement.unachievedDescription]
 		_achievementDescriptions[achievement.identifier] = achievement
 
 
-func on_achievements_report_fail(error: int, message: String) -> void:
+func _on_achievements_report_fail(error: int, message: String) -> void:
 	status_label.text = message
 
 
-func on_achievements_report_success() -> void:
+func _on_achievements_report_success() -> void:
 	status_label.text = "Achievements progresses reported"
 
 
-func on_achievements_load_fail(error: int, message: String) -> void:
+func _on_achievements_load_fail(error: int, message: String) -> void:
 	status_label.text = message
 
 
-func on_achievements_load_success(achievements: Array[GameCenterAchievement]) -> void:
+func _on_achievements_load_success(achievements: Array[GameCenterAchievement]) -> void:
 	status_label.text = "Achievements received"
 	for achievement in achievements:
 		status_label.text = "%s - %s - %d" % [achievement.identifier, str(achievement.isCompleted), achievement.percentComplete]
 		_achievements[achievement.identifier] = achievement
 
 
-func on_achievements_reset_fail(error: int, message: String) -> void:
+func _on_achievements_reset_fail(error: int, message: String) -> void:
 	status_label.text = message
 
 
-func on_achievements_reset_success() -> void:
+func _on_achievements_reset_success() -> void:
 	status_label.text = "Achievements progresses reset"
 
 
-func on_leaderboard_score_fail(error: int, message: String) -> void:
+func _on_leaderboard_score_fail(error: int, message: String) -> void:
 	status_label.text = message
 
 
-func on_leaderboard_score_success() -> void:
+func _on_leaderboard_score_success() -> void:
 	status_label.text = "Score %d reported" % score
 
 
-func on_leaderboard_fail(error: int, message: String) -> void:
+func _on_leaderboard_fail(error: int, message: String) -> void:
 	status_label.text = message
 
 
-func on_leaderboard_dismissed() -> void:
+func _on_leaderboard_dismissed() -> void:
 	status_label.text = "Leaderboard dismissed"
 
 
-func on_leaderboard_success() -> void:
+func _on_leaderboard_success() -> void:
 	status_label.text = "Leaderboard shown"
 
 
