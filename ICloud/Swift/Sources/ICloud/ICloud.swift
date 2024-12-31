@@ -29,9 +29,6 @@ class ICloud: Object {
     /// iCloud notification
     @Signal var notificationChange:
         SignalWithArguments<Int, ObjectCollection<String>>
-    /// @Signal
-    /// Error during iCloud operations
-    @Signal var icloudFail: SignalWithArguments<Int, String>
 
     static var instance: ICloud?
     private let iCloudStore = NSUbiquitousKeyValueStore.default
