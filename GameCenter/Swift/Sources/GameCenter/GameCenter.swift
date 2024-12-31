@@ -35,8 +35,6 @@ enum GameCenterError: Int, Error {
 @Godot
 class GameCenter: Object {
 
-    @Signal var debugger: SignalWithArguments<String>
-
     // MARK: Authentication
     /// @Signal
     /// Player is successfully authenticated on GameCenter

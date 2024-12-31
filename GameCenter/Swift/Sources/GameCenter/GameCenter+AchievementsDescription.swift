@@ -19,7 +19,7 @@ extension GameCenter {
                         "Error while loading achievement descriptions")
                     return
                 }
-                self.debugger.emit("Loading achievements")
+                GD.printDebug("Loading achievements")
                 var achievementDestriptions = ObjectCollection<
                     GameCenterAchievementDescription
                 >()
@@ -27,7 +27,7 @@ extension GameCenter {
                     achievementDestriptions.append(
                         GameCenterAchievementDescription(description))
                 }
-                self.debugger.emit(
+                GD.printDebug(
                     "Loaded \(achievementDestriptions.count) achievement descriptions")
                 self.achievementsDescriptionSuccess.emit(
                     achievementDestriptions)

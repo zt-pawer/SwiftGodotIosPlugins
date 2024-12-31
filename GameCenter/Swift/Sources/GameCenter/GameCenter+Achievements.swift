@@ -34,7 +34,7 @@ extension GameCenter {
                 achievement.showsCompletionBanner
             gkAchievements.append(gkAchievement)
         }
-        debugger.emit("Reporting achievements")
+        GD.printDebug("Reporting achievements")
         GKAchievement.report(
             gkAchievements,
             withCompletionHandler: {
@@ -51,7 +51,7 @@ extension GameCenter {
     }
 
     func resetAchievementsInternal() {
-        debugger.emit("Resetting achievements")
+        GD.printDebug("Resetting achievements")
         GKAchievement.resetAchievements(completionHandler: { error in
             guard error == nil else {
                 self.achievementsResetFail.emit(
@@ -65,7 +65,7 @@ extension GameCenter {
     }
 
     func loadAchievementsInternal() {
-        debugger.emit("Loading achievements")
+        GD.printDebug("Loading achievements")
         GKAchievement.loadAchievements(completionHandler: {
             gkAchievements, error in
             guard error == nil else {
@@ -76,13 +76,13 @@ extension GameCenter {
             }
             var achievements = ObjectCollection<GameCenterAchievement>()
             guard let gkAchievements else {
-                self.debugger.emit(
+                GD.printDebug(
                     "Loaded 0 achievements")
                 self.achievementsLoadSuccess.emit(
                     achievements)
                 return
             }
-            self.debugger.emit(
+                GD.printDebug(
                 "Loaded \(gkAchievements.count) achievements")
             for gkAchievement in gkAchievements {
                 achievements.append(GameCenterAchievement(gkAchievement))
@@ -104,7 +104,9 @@ extension GameCenter {
                     case GameCenterUIState.dismissed.rawValue:
                         self.leaderboardDismissed.emit()
                     default:
-                        self.leaderboardFail.emit(GameCenterError.unknownError.rawValue, "Unknown error")
+                        self.leaderboardFail.emit(
+                            GameCenterError.unknownError.rawValue,
+                            "Unknown error")
                     }
                 })
         #endif
@@ -123,12 +125,15 @@ extension GameCenter {
                     case GameCenterUIState.dismissed.rawValue:
                         self.leaderboardDismissed.emit()
                     default:
-                        self.leaderboardFail.emit(GameCenterError.unknownError.rawValue, "Unknown error")
+                        self.leaderboardFail.emit(
+                            GameCenterError.unknownError.rawValue,
+                            "Unknown error")
                     }
                 })
         #else
             leaderboardScoreFail.emit(
-                GameCenterError.notAvailable.rawValue, "Leaderboard not available")
+                GameCenterError.notAvailable.rawValue,
+                "Leaderboard not available")
         #endif
     }
 

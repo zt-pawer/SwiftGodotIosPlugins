@@ -11,7 +11,6 @@ More functionality may be added based on needs.
 # How to use it
 See Godot demo project for an end to end implementation.
 Register all the signals required, this can be done in the ``_ready()`` method and connect each signal to the relative method.
-``debugger`` signal might be removed anytime.
 
 ```
 func _ready() -> void:
@@ -32,7 +31,6 @@ func _ready() -> void:
 		_gamecenter.leaderboard_success.connect(_on_leaderboard_success)
 		_gamecenter.leaderboard_dismissed.connect(_on_leaderboard_dismissed)
 		_gamecenter.leaderboard_fail.connect(_on_leaderboard_fail)
-		_gamecenter.debugger.connect(_on_debugger)
 ```
 
 The Godot method signature required
@@ -52,7 +50,6 @@ func _on_leaderboard_score_success() -> void:
 func _on_leaderboard_score_fail(error: int, message: String) -> void:
 func _on_leaderboard_dismissed() -> void:
 func _on_leaderboard_success() -> void:
-func _on_debugger(message:String) ->void:
 ```
 
 # Technical details
