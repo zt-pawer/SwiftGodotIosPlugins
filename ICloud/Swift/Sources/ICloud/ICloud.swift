@@ -2,7 +2,7 @@
 //  ICloudViewController.swift
 //  SwiftGodotIosPlugins
 //
-//  Created by ZT Pawer on 12/26/24.
+//  Created by ZT Pawer on 12/30/24.
 //
 
 import GameKit
@@ -28,7 +28,7 @@ class ICloud: Object {
     /// @Signal
     /// iCloud notification
     @Signal var notificationChange:
-        SignalWithArguments<Int, ObjectCollection<String>>
+        SignalWithArguments<Int, GArray>
 
     static var instance: ICloud?
     private let iCloudStore = NSUbiquitousKeyValueStore.default
@@ -78,8 +78,12 @@ class ICloud: Object {
             userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int ?? -1
         let changedKeys =
             userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] ?? []
-
-        notificationChange.emit(changeReason, ObjectCollection(changedKeys))
+        
+        var array = GArray()
+        for key in changedKeys {
+            array.append(Variant(key))
+        }
+        notificationChange.emit(changeReason, array)
 
     }
 
