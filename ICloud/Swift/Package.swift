@@ -4,20 +4,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "GameCenter",
+    name: "ICloud",
     platforms: [.iOS(.v17),(.macOS(.v14))],
     products: [
         .library(
-            name: "GameCenter",
+            name: "ICloud",
             type: .dynamic,
-            targets: ["GameCenter"]),
+            targets: ["ICloud"]),
     ],
     dependencies: [
         .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "9c15f48d1529a0499208c1678b35f8993691c9f1")
     ],
     targets: [
         .target(
-            name: "GameCenter",
+            name: "ICloud",
             dependencies: [
                 "SwiftGodot",
             ],

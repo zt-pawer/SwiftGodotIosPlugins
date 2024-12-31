@@ -79,7 +79,7 @@ fastlane/test_output
 **/*.import
 
 # Local
-Local
+Releases/
 
 # Zig
 .zig-cache
