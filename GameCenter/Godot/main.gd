@@ -27,7 +27,6 @@ func _ready() -> void:
 		_gamecenter.leaderboard_success.connect(_on_leaderboard_success)
 		_gamecenter.leaderboard_dismissed.connect(_on_leaderboard_dismissed)
 		_gamecenter.leaderboard_fail.connect(_on_leaderboard_fail)
-		_gamecenter.debugger.connect(_on_debugger)
 		status_label.text = "Plugin loaded"
 	else:
 		status_label.text = "No plugin"
@@ -139,7 +138,3 @@ func _on_achievement_show_button_pressed() -> void:
 
 func _on_leaderboard_show_button_pressed() -> void:
 	_gamecenter.showLeaderboards()
-
-
-func _on_debugger(message:String) ->void:
-	print("[SwiftDebugger] %s" % message)

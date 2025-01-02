@@ -91,17 +91,17 @@ class GameCenter: Object {
             GameCenterViewController()
     #endif
 
-    static var instance: GameCenter?
+    static var shared: GameCenter?
     var player: GameCenterPlayerLocal?
 
     required init() {
         super.init()
-        GameCenter.instance = self
+        GameCenter.shared = self
     }
 
     required init(nativeHandle: UnsafeRawPointer) {
         super.init()
-        GameCenter.instance = self
+        GameCenter.shared = self
     }
 
     // MARK: Authentication

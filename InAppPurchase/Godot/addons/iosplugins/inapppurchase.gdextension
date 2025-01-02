@@ -1,0 +1,16 @@
+[configuration]
+entry_symbol = "inapppurchase"
+compatibility_minimum = 4.2
+relodable = true
+
+[libraries]
+macos.debug = "res://addons/iosplugins/macos/libInAppPurchase.dylib"
+macos.release = "res://addons/iosplugins/macos/libInAppPurchase.dylib"
+ios.debug = "res://addons/iosplugins/ios/InAppPurchase.framework"
+ios.release = "res://addons/iosplugins/ios/InAppPurchase.framework"
+
+[dependencies]
+macos.debug = {"res://addons/iosplugins/macos/libSwiftGodot.dylib" : ""}
+macos.release = {"res://addons/iosplugins/macos/libSwiftGodot.dylib" : ""}
+ios.debug = {"res://addons/iosplugins/ios/SwiftGodot.framework" : ""}
+ios.release = {"res://addons/iosplugins/ios/SwiftGodot.framework" : ""}

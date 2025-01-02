@@ -30,7 +30,7 @@ class ICloud: Object {
     @Signal var notificationChange:
         SignalWithArguments<Int, GArray>
 
-    static var instance: ICloud?
+    static var shared: ICloud?
     private let iCloudStore = NSUbiquitousKeyValueStore.default
     private var notificationObserver: NSObjectProtocol?
     private var autoSyncEnabled: Bool = false
@@ -42,13 +42,13 @@ class ICloud: Object {
     required init() {
         super.init()
         notificationSetup()
-        ICloud.instance = self
+        ICloud.shared = self
     }
 
     required init(nativeHandle: UnsafeRawPointer) {
         super.init()
         notificationSetup()
-        ICloud.instance = self
+        ICloud.shared = self
     }
 
     private func notificationSetup() {
