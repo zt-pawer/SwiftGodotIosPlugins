@@ -33,15 +33,15 @@ func _on_notification_change(code:int, keyValues:Dictionary) -> void:
 
 ## Methods
 
-- `setAutoSync()` - Set auto sync.
+- `setAutoSync(status:Bool)` - Set auto sync.
 - `getAutoSync()` - Get auto sync.
 - `synchronize()` - Synchronize.
 
-- `setStringValue()` - Write a Godot string equivalent value to iCloud.
+- `setStringValue(value:String)` - Write a Godot string equivalent value to iCloud.
 - `getStringValue()` - Read a Godot string equivalent value from iCloud.
-- `setIntValue()` - Write a Godot in equivalent value to iCloud.
+- `setIntValue(value:Int)` - Write a Godot in equivalent value to iCloud.
 - `getIntValue()` - Read a Godot int equivalent value from iCloud.
-- `setDoubleValue()` - Write a Godot float equivalent value to iCloud.
+- `setDoubleValue(value:Double)` - Write a Godot float equivalent value to iCloud.
 - `getDoubleValue()` - Read a Godot float equivalent value from iCloud.
-- `setBoolValue()` - Write a Godot bool equivalent value to iCloud.
+- `setBoolValue(value:Bool)` - Write a Godot bool equivalent value to iCloud.
 - `getBoolValue()` - Read a Godot bool equivalent value from iCloud.
