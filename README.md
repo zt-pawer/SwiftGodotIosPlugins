@@ -1,4 +1,4 @@
-# SwiftGodotPlugins
+# SwiftGodotIosPlugins
 
 This is a Swift implementation using the [SwiftGodot](https://github.com/migueldeicaza/SwiftGodot/) framework of some the plugins for Godot.
 
@@ -11,19 +11,19 @@ This is a Swift implementation using the [SwiftGodot](https://github.com/migueld
 
 # Supported Plugins
 
-Currently, SwiftGodotPlugins implements the Ios GameCenter, ICloud and InAppPurchase integration.
+Currently, SwiftGodotIosPlugins implements the Ios GameCenter, ICloud and InAppPurchase integration.
 Other features in scope are Ios IapPurchases, iCloud, Firebase, adMob. 
 Other integrations might be considered.
 
 # Supported Platforms
 
-Currently, SwiftGodotPlugins can be used in projects targeting the iOS platforms. 
+Currently, SwiftGodotIosPlugins can be used in projects targeting the iOS platforms. 
 - **Android** and **Windows** will be in scope for Firebase and adMob.
 - **macOS** and **Linux** are not scope at the moment.
 
 # Development Status
 
-SwiftGodotPlugins is built on the GDExtension framework, which is still in an [experimental](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/what_is_gdextension.html#differences-between-gdextension-and-c-modules) state, and consequently SwiftGodotPlugins is still in an experimental state. **Any use on production application is at your own risk.**
+SwiftGodotIosPlugins is built on the GDExtension framework, which is still in an [experimental](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/what_is_gdextension.html#differences-between-gdextension-and-c-modules) state, and consequently SwiftGodotIosPlugins is still in an experimental state. **Any use on production application is at your own risk.**
 
 # How to use it
 
