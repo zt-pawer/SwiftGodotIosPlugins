@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://github.com/zt-pawer/SwiftGodotGameCenter/blob/main/LICENSE)
 
 # Development status
-Initial effort focused on bringing this GDExtension implementation to parity with [Godot iCloud Ios Plugin](https://github.com/godot-sdk-integrations/godot-ios-plugins/tree/master/plugins/icloud).
+Initial effort focused on bringing this GDExtension implementation to parity with [Godot InAppStore Ios Plugin](https://github.com/godot-sdk-integrations/godot-ios-plugins/tree/master/plugins/inappstore).
 More functionality may be added based on needs.
 
 # How to use it
