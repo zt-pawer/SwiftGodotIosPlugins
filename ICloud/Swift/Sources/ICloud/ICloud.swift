@@ -24,11 +24,13 @@ enum ICloudError: Int, Error {
 @Godot
 class ICloud: Object {
 
+    /// @Signal
+    /// Error during the interaction with iCloud
+    @Signal var icloudFail: SignalWithArguments<Int, String>
     // MARK: KeyValue
     /// @Signal
     /// iCloud notification
-    @Signal var notificationChange:
-        SignalWithArguments<Int, GArray>
+    @Signal var notificationChange: SignalWithArguments<Int, GArray>
 
     static var shared: ICloud?
     private let iCloudStore = NSUbiquitousKeyValueStore.default
@@ -78,7 +80,7 @@ class ICloud: Object {
             userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int ?? -1
         let changedKeys =
             userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] ?? []
-        
+
         var array = GArray()
         for key in changedKeys {
             array.append(Variant(key))
@@ -97,71 +99,54 @@ class ICloud: Object {
 
     /// @Callable
     ///
-    /// Write a Godot string equivalent value to iCloud
+    /// Write a Godot variant equivalent value to iCloud
     @Callable
-    func setStringValue(_ aValue: String, forKey key: String) {
-        iCloudStore.set(aValue, forKey: key)
+    func setValue(_ aValue: Variant, forKey key: String) {
+        var value = variantToAny(aValue)
+        if value == nil {
+            icloudFail.emit(ICloudError.valueError.rawValue, "Value not supported \(aValue)")
+            return
+        }
+        iCloudStore.set(variantToAny(aValue), forKey: key)
         if autoSync { iCloudStore.synchronize() }
     }
 
     /// @Callable
     ///
-    /// Read a Godot string equivalent value from iCloud
+    /// Read a Godot variant equivalent value from iCloud
     @Callable
-    func getStringValue(forKey key: String) -> String? {
-        return iCloudStore.string(forKey: key)
+    func getValue(forKey key: String) -> Variant? {
+        return anyToVariant(iCloudStore.object(forKey: key))
     }
 
-    /// @Callable
-    ///
-    /// Write a Godot in equivalent value to iCloud
-    @Callable
-    func setIntValue(_ aValue: Int64, forKey key: String) {
-        iCloudStore.set(aValue, forKey: key)
-        if autoSync { iCloudStore.synchronize() }
+    private func variantToAny(_ value: Variant) -> Any? {
+        switch value.gtype {
+        case .string:
+            return String(value)
+        case .int:
+            return Int(value)
+        case .float:
+            return Double(value)
+        case .bool:
+            return Bool(value)
+        default:
+            return nil
+        }
     }
 
-    /// @Callable
-    ///
-    /// Read a Godot int equivalent value from iCloud
-    /// Note: On a 32bit system it might fail if outside of the 32-bit range
-    @Callable
-    func getIntValue(forKey key: String) -> Int? {
-        return Int(iCloudStore.longLong(forKey: key))
-    }
-
-    /// @Callable
-    ///
-    /// Write a Godot float equivalent value to iCloud
-    @Callable
-    func setFloatValue(_ aValue: Double, forKey key: String) {
-        iCloudStore.set(aValue, forKey: key)
-        if autoSync { iCloudStore.synchronize() }
-    }
-
-    /// @Callable
-    ///
-    /// Read a Godot float equivalent value from iCloud
-    @Callable
-    func getFloatValue(forKey key: String) -> Double? {
-        return iCloudStore.double(forKey: key)
-    }
-
-    /// @Callable
-    ///
-    /// Write a Godot bool equivalent value to iCloud
-    @Callable
-    func setBoolValue(_ aValue: Bool, forKey key: String) {
-        iCloudStore.set(aValue, forKey: key)
-        if autoSync { iCloudStore.synchronize() }
-    }
-
-    /// @Callable
-    ///
-    /// Read a Godot bool equivalent value from iCloud
-    @Callable
-    func getBoolValue(forKey key: String) -> Bool? {
-        return iCloudStore.bool(forKey: key)
+    private func anyToVariant(_ value: Any) -> Variant? {
+        switch value {
+        case let value as String:
+            return Variant(value)
+        case let value as Int:
+            return Variant(value)
+        case let value as Double:
+            return Variant(value)
+        case let value as Bool:
+            return Variant(value)
+        default:
+            return nil
+        }
     }
 
 }

@@ -3,17 +3,24 @@
 
 import PackageDescription
 
+var libraryType: Product.Library.LibraryType
+#if os(Windows)
+libraryType = .static
+#else
+libraryType = .dynamic
+#endif
+
 let package = Package(
     name: "GameCenter",
     platforms: [.iOS(.v17),(.macOS(.v14))],
     products: [
         .library(
             name: "GameCenter",
-            type: .dynamic,
+            type: libraryType,
             targets: ["GameCenter"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "9c15f48d1529a0499208c1678b35f8993691c9f1")
+        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "727a0bbe44d9fa4b4f6d38e78ba12e5b395bba4e")
     ],
     targets: [
         .target(

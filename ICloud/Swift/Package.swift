@@ -13,7 +13,7 @@ let package = Package(
             targets: ["ICloud"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "9c15f48d1529a0499208c1678b35f8993691c9f1")
+        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "727a0bbe44d9fa4b4f6d38e78ba12e5b395bba4e")
     ],
     targets: [
         .target(
