@@ -45,14 +45,11 @@ extension InAppPurchase {
                     completion(nil)
                 case .unverified(_, let error):
                     completion(.failedToVerify)
-                    print("Failed to verify purchase: \(error)")
                 }
             case .pending:
-                print("Purchase is pending")
-                completion(.failedToPurchase)  // Handle pending state appropriately
+                completion(.pending)
             case .userCancelled:
-                print("User cancelled the purchase")
-                completion(.failedToPurchase)  // Handle user cancellation
+                completion(.failedToPurchase)
             }
         }
     }
