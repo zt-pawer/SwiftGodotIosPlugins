@@ -11,7 +11,7 @@ This is a Swift implementation using the [SwiftGodot](https://github.com/migueld
 
 ## Benefits
 
-There are few major benefit with this version of the plugins compared to the classical [godot-ios-plugins](https://github.com/godot-sdk-integrations/godot-ios-plugins) plugins:
+There are few major benefits with this version of the plugins compared to the classical [godot-ios-plugins](https://github.com/godot-sdk-integrations/godot-ios-plugins) plugins:
 - Completely written in Swift
 - Leverage new Apple SDKs (no deprecated APIs)
 - Conform to Godot signals 
