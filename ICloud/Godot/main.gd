@@ -8,7 +8,8 @@ func _ready() -> void:
 	if _icloud == null && ClassDB.class_exists("ICloud"):
 		_icloud = ClassDB.instantiate("ICloud")
 		_icloud.setAutoSync(true)
-		_icloud.icloud_fail.connect(_on_icloud_fail)
+		_icloud.icloud_set_fail.connect(_on_icloud_set_fail)
+		_icloud.icloud_get_fail.connect(_on_icloud_get_fail)
 		_icloud.notification_change.connect(_on_notification_change)
 
 
@@ -48,7 +49,11 @@ func _on_load_bool_button_pressed() -> void:
 	_readAny("keybool")
 
 
-func _on_icloud_fail(error: int, message: String) -> void:
+func _on_icloud_set_fail(error: int, message: String) -> void:
+	status_label.text = message
+
+
+func _on_icloud_get_fail(error: int, message: String) -> void:
 	status_label.text = message
 
 
