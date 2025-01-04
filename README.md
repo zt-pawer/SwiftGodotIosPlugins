@@ -25,8 +25,9 @@ Other integrations might be considered.
 # Supported Platforms
 
 Currently, SwiftGodotIosPlugins can be used in projects targeting the iOS platforms. 
-- **Android** and **Windows** will be in scope for Firebase and adMob.
-- **macOS** and **Linux** are not scope at the moment.
+- **macOS** is not scope at the moment.
+- **Android**, **Windows** and **Linux** N/A.
+
 
 # Development Status
 
