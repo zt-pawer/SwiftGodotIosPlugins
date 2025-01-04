@@ -53,3 +53,7 @@ Have a bug fix or feature request you'd like to see added? Consider contributing
 [![Buy me a coffee](.github/bmc-button.png)](https://buymeacoffee.com/ztpawer)
 
 [![Become a patreon](.github/patreon-button.png)](https://patreon.com/ztpawer)
+
+# Games using it
+- [Pang in Time](https://apps.apple.com/us/app/pang-in-time/id6499503406)
+- [Jupiter Escape](https://apps.apple.com/us/app/jupiter-escape/id6476010007)
