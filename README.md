@@ -55,6 +55,6 @@ Have a bug fix or feature request you'd like to see added? Consider contributing
 [![Become a patreon](.github/patreon-button.png)](https://patreon.com/ztpawer)
 
 # Games using it
-[![Pang in Time](https://www.ztpawer.com/wp-content/uploads/2025/01/pit.webp|width=100px)](https://apps.apple.com/us/app/pang-in-time/id6499503406)
+[![Pang in Time](.github/pit.webp)](https://apps.apple.com/us/app/pang-in-time/id6499503406)
 
-[![Jupiter Escape](https://www.ztpawer.com/wp-content/uploads/2025/01/je.webp|width=100px)](https://apps.apple.com/us/app/jupiter-escape/id6476010007)
+[![Jupiter Escape](.github/je.webp)](https://apps.apple.com/us/app/jupiter-escape/id6476010007)
