@@ -9,6 +9,13 @@ This is a Swift implementation using the [SwiftGodot](https://github.com/migueld
 [![Swift](https://img.shields.io/badge/Swift-5.9.1-blue.svg)](https://www.swift.org/)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://github.com/zt-pawer/SwiftGodotGameCenter/blob/main/LICENSE)
 
+## Benefits
+
+There are few major benefit with this version of the plugins compared to the classical [godot-ios-plugins](https://github.com/godot-sdk-integrations/godot-ios-plugins) plugins:
+- Completely written in Swift
+- Leveraging new Apple SDKs (no deprecated APIs)
+- Conforms to Godot signals 
+
 # Supported Plugins
 
 Currently, SwiftGodotIosPlugins implements the Ios GameCenter, ICloud and InAppPurchase integration.
