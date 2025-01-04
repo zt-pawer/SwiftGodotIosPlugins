@@ -18,9 +18,8 @@ There are few major benefits with this version of the plugins compared to the cl
 
 # Supported Plugins
 
-Currently, SwiftGodotIosPlugins implements the Ios GameCenter, ICloud and InAppPurchase integration.
-Other features in scope are Ios IapPurchases, iCloud, Firebase, adMob. 
-Other integrations might be considered.
+Currently, SwiftGodotIosPlugins implements the Ios **GameCenter**, **ICloud** and **InAppPurchase** integration.
+Other iOS integrations (camera, arkit, apn, photo_picker) are under consideration.
 
 # Supported Platforms
 
