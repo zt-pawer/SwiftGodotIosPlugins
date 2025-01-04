@@ -55,6 +55,6 @@ Have a bug fix or feature request you'd like to see added? Consider contributing
 [![Become a patreon](.github/patreon-button.png)](https://patreon.com/ztpawer)
 
 # Games using it
-[![Pang in Time](https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d9/b7/ac/d9b7ac8f-499e-08da-cc1d-1766ff650548/AppIcon-0-0-1x_U007emarketing-0-8-0-0-85-220.png/460x0w.webp)](https://apps.apple.com/us/app/pang-in-time/id6499503406)
+[![Pang in Time](https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d9/b7/ac/d9b7ac8f-499e-08da-cc1d-1766ff650548/AppIcon-0-0-1x_U007emarketing-0-8-0-0-85-220.png/460x0w.webp | width=100)](https://apps.apple.com/us/app/pang-in-time/id6499503406)
 
-[![Jupiter Escape](https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/34/4d/dd/344dddf7-650e-6f8b-7136-2e5093a3d84e/AppIcon-0-0-1x_U007emarketing-0-7-0-0-85-220.png/460x0w.webp)](https://apps.apple.com/us/app/jupiter-escape/id6476010007)
+[![Jupiter Escape](https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/34/4d/dd/344dddf7-650e-6f8b-7136-2e5093a3d84e/AppIcon-0-0-1x_U007emarketing-0-7-0-0-85-220.png/460x0w.webp | width=100)](https://apps.apple.com/us/app/jupiter-escape/id6476010007)
