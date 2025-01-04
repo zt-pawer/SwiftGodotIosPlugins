@@ -25,8 +25,11 @@ enum ICloudError: Int, Error {
 class ICloud: Object {
 
     /// @Signal
-    /// Error during the interaction with iCloud
-    @Signal var icloudFail: SignalWithArguments<Int, String>
+    /// Error during the retrieving of data from iCloud
+    @Signal var icloudGetFail: SignalWithArguments<Int, String>
+    /// @Signal
+    /// Error during the storing of data in iCloud
+    @Signal var icloudSetFail: SignalWithArguments<Int, String>    
     // MARK: KeyValue
     /// @Signal
     /// iCloud notification
@@ -104,7 +107,7 @@ class ICloud: Object {
     func setValue(_ aValue: Variant, forKey key: String) {
         var value = variantToAny(aValue)
         if value == nil {
-            icloudFail.emit(ICloudError.valueError.rawValue, "Value not supported \(aValue)")
+            icloudSetFail.emit(ICloudError.valueError.rawValue, "Value not supported \(aValue)")
             return
         }
         iCloudStore.set(variantToAny(aValue), forKey: key)
@@ -116,7 +119,12 @@ class ICloud: Object {
     /// Read a Godot variant equivalent value from iCloud
     @Callable
     func getValue(forKey key: String) -> Variant? {
-        return anyToVariant(iCloudStore.object(forKey: key))
+        var value = anyToVariant(iCloudStore.object(forKey: key))
+        if value == nil {
+            icloudGetFail.emit(ICloudError.valueError.rawValue, "Value not available for \(key)")
+            return
+        }
+        return value
     }
 
     private func variantToAny(_ value: Variant) -> Any? {
