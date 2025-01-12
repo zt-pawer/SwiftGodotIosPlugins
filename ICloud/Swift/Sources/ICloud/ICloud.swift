@@ -122,7 +122,7 @@ class ICloud: Object {
         var value = anyToVariant(iCloudStore.object(forKey: key))
         if value == nil {
             icloudGetFail.emit(ICloudError.valueError.rawValue, "Value not available for \(key)")
-            return
+            return nil
         }
         return value
     }
