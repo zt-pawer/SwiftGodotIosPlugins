@@ -27,8 +27,6 @@ Other iOS integrations (camera, arkit, apn, photo_picker) are under consideratio
 
 Currently, SwiftGodotIosPlugins can be used in projects targeting the iOS platforms. 
 - **macOS** is not scope at the moment.
-- **Android**, **Windows** and **Linux** N/A.
-
 
 # Development Status
 
