@@ -35,6 +35,7 @@ SwiftGodotIosPlugins is built on the GDExtension framework, which is still in an
 # How to use it
 
 Register the signals as indicated for each plugin and implement the methods that you need to handle. A demo application is provided for each of the plugin.
+[YouTube tutorial](https://www.youtube.com/watch?v=RcisM4x9cTo)
 
 # Technical details
 - [GameCenter](GameCenter/README.md)
