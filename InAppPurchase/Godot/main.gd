@@ -10,18 +10,18 @@ func _ready() -> void:
 	if _inapppurchase == null && ClassDB.class_exists("InAppPurchase"):
 		_inapppurchase = ClassDB.instantiate("InAppPurchase")
 		_inapppurchase.in_app_purchase_fetch_success.connect(_on_in_app_purchase_fetch_success)
-		_inapppurchase.in_app_purchase_fetch_fail.connect(_on_in_app_purchase_fetch_fail)
+		_inapppurchase.in_app_purchase_fetch_error.connect(_on_in_app_purchase_fetch_error)
 		_inapppurchase.in_app_purchase_success.connect(_on_in_app_purchase_success)
-		_inapppurchase.in_app_purchase_fail.connect(_on_in_app_purchase_fail)
+		_inapppurchase.in_app_purchase_error.connect(_on_in_app_purchase_error)
 		_inapppurchase.in_app_purchase_restore_success.connect(_on_in_app_purchase_restore_success)
-		_inapppurchase.in_app_purchase_restore_fail.connect(_on_in_app_purchase_restore_fail)
+		_inapppurchase.in_app_purchase_restore_error.connect(_on_in_app_purchase_restore_error)
 
 		status_label.text = "Plugin loaded"
 	else:
 		status_label.text = "No plugin"
 
 
-func _on_in_app_purchase_fetch_fail(error: int, message: String) -> void:
+func _on_in_app_purchase_fetch_error(error: int, message: String) -> void:
 	status_label.text = message
 
 
@@ -40,7 +40,7 @@ func _on_in_app_purchase_success(message: String) -> void:
 	status_label.text = "Product %s purchased" % message
 
 
-func _on_in_app_purchase_fail(error: int, message: String) -> void:
+func _on_in_app_purchase_error(error: int, message: String) -> void:
 	status_label.text = message
 
 
@@ -49,7 +49,7 @@ func _on_in_app_purchase_restore_success(products: Array[Variant]) -> void:
 		status_label.text = str(product)
 
 
-func _on_in_app_purchase_restore_fail(error: int, message: String) -> void:
+func _on_in_app_purchase_restore_error(error: int, message: String) -> void:
 	status_label.text = message
 
 
