@@ -33,10 +33,8 @@ extension InAppPurchase {
             completion(.productNotFound)
             return
         }
-
         Task {
             let result = try await product.purchase()
-
             switch result {
             case .success(let verification):
                 switch verification {

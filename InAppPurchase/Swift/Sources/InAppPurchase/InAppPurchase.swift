@@ -67,7 +67,8 @@ class InAppPurchase: Object , ObservableObject {
     @Signal var inAppPurchaseSuccess: SignalWithArguments<String>
     /// @Signal
     /// Error suring the signing process
-    @Signal var inAppPurchaseFetchSuccess: SignalWithArguments<ObjectCollection<InAppPurchaseProduct>>
+    @Signal var inAppPurchaseFetchSuccess:
+        SignalWithArguments<ObjectCollection<InAppPurchaseProduct>>
     /// @Signal
     /// Error suring the signing process
     @Signal var inAppPurchaseFetchError: SignalWithArguments<Int, String>
@@ -80,7 +81,7 @@ class InAppPurchase: Object , ObservableObject {
     /// @Signal
     /// Error suring the signing process
     @Signal var inAppPurchaseRestoreError: SignalWithArguments<Int, String>
-    
+
     required override init() {
         super.init()
         startTransactionListener()
@@ -99,7 +100,7 @@ class InAppPurchase: Object , ObservableObject {
     }
 
     // MARK: - Synchronous API Exposed to the Caller
-    
+
     /// @Callable
     ///
     /// Fetch products from the App Store with listeners (completion handlers)
@@ -109,12 +110,13 @@ class InAppPurchase: Object , ObservableObject {
             with: products,
             completion: { error in
                 guard error == nil else {
-                    self.inAppPurchaseFetchError.emit(error!.rawValue, error!.localizedDescription)
+                    self.inAppPurchaseFetchError.emit(
+                        error!.rawValue, error!.localizedDescription)
                     return
                 }
                 var iapProducts = ObjectCollection<InAppPurchaseProduct>()
                 for product in self.products_cached {
-                    iapProducts.append(InAppPurchaseProduct(product:product))
+                    iapProducts.append(InAppPurchaseProduct(product: product))
                 }
                 self.inAppPurchaseFetchSuccess.emit(iapProducts)
             })
@@ -129,7 +131,8 @@ class InAppPurchase: Object , ObservableObject {
             productID,
             completion: { error in
                 guard error == nil else {
-                    self.inAppPurchaseError.emit(error!.rawValue, error!.localizedDescription)
+                    self.inAppPurchaseError.emit(
+                        error!.rawValue, error!.localizedDescription)
                     return
                 }
                 self.inAppPurchaseSuccess.emit(productID)
@@ -143,7 +146,8 @@ class InAppPurchase: Object , ObservableObject {
     func restorePurchases() {
         restorePurchasesAsync(completion: { products, error in
             guard error == nil else {
-                self.inAppPurchaseRestoreError.emit(error!.rawValue, error!.localizedDescription)
+                self.inAppPurchaseRestoreError.emit(
+                    error!.rawValue, error!.localizedDescription)
                 return
             }
             var productsArray = GArray()
@@ -160,7 +164,7 @@ class InAppPurchase: Object , ObservableObject {
                 case .verified(let transaction):
                     await self.handleTransaction(transaction)
                 case .unverified(_, let error):
-                    print("Unverified transaction: \(error)")
+                    GD.printErr("Unverified transaction: \(error)")
                 }
             }
         }
