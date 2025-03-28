@@ -25,6 +25,7 @@ enum InAppPurchaseError: Int, Error {
     case failedToPurchase = 6
     case failedToVerify = 7
     case failedToRestore = 8
+    case pending = 9
 
     var localizedDescription: String {
         switch self {
@@ -44,6 +45,8 @@ enum InAppPurchaseError: Int, Error {
             return "Failed to verify purchase."
         case .failedToRestore:
             return "Failed to restore purchases."
+        case .pending:
+            return "The purchase is pending some user action."
         }
     }
 }
