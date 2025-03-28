@@ -35,21 +35,26 @@ extension InAppPurchase {
         }
 
         Task {
-            let result = try await product.purchase()
-
-            switch result {
-            case .success(let verification):
-                switch verification {
-                case .verified(let transaction):
-                    await self.handleTransaction(transaction)
-                    completion(nil)
-                case .unverified(_, let error):
-                    completion(.failedToVerify)
+            do {
+                let result = try await product.purchase()
+                
+                switch result {
+                case .success(let verification):
+                    switch verification {
+                    case .verified(let transaction):
+                        await self.handleTransaction(transaction)
+                        completion(nil)
+                    case .unverified(_, let error):
+                        completion(.failedToVerify)
+                    }
+                case .pending:
+                    completion(.pending)
+                case .userCancelled:
+                    completion(.failedToPurchase)
                 }
-            case .pending:
-                completion(.pending)
-            case .userCancelled:
-                completion(.failedToPurchase)
+            }
+            catch {
+                completion(.unknownError)
             }
         }
     }
