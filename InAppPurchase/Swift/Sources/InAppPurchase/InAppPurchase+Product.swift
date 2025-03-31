@@ -57,6 +57,39 @@ extension InAppPurchase {
         }
     }
 
+    internal func fetchActiveAutoRenewableSubscriptionsAsync(
+        completion: @escaping ([String]) -> Void
+    ) {
+        Task {
+            var activeAutoRenewableSubscriptions: [String] = []
+            // Fetch all current entitlements and filter valid transactions
+            for await latestTransaction in Transaction
+                .currentEntitlements
+            {
+                switch latestTransaction
+                {
+                case .verified(let transaction):
+                    // Check for active auto-renewable subscriptions
+                    if .autoRenewable == transaction.productType
+                        && transaction.revocationDate == nil
+                        && transaction.isUpgraded == false
+                    {
+                        activeAutoRenewableSubscriptions.append(transaction.productID)
+                    }
+                case .unverified(
+                    let unverifiedTransaction, let verificationError):
+                    // Handle unverified transactions based on your
+                    // business model.
+                    continue
+
+                }
+            }
+
+            // Call the completion handler with active auto-renewable subscriptions
+            completion(activeAutoRenewableSubscriptions)
+        }
+    }
+    
     internal func restorePurchasesAsync(
         completion: @escaping ([String], InAppPurchaseError?) -> Void
     ) {

@@ -30,37 +30,44 @@ theme_override_constants/separation = 20
 alignment = 1
 
 [node name="LoadProductsButton" type="Button" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 160)
+custom_minimum_size = Vector2(0, 130)
 layout_mode = 2
 text = "Load products"
 
 [node name="PurchaseConsumableButton" type="Button" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 160)
+custom_minimum_size = Vector2(0, 130)
 layout_mode = 2
 disabled = true
 text = "Purchase consumable"
 
 [node name="PurchaseNonConsumableButton" type="Button" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 160)
+custom_minimum_size = Vector2(0, 130)
 layout_mode = 2
 disabled = true
 text = "Purchase non consumable"
 
 [node name="PurchaseSubscriptionButton" type="Button" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 160)
+custom_minimum_size = Vector2(0, 130)
 layout_mode = 2
 disabled = true
 text = "Purchase subscription"
 
 [node name="PurchaseSubscriptionNorenewButton" type="Button" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 160)
+custom_minimum_size = Vector2(0, 130)
 layout_mode = 2
 disabled = true
 text = "Purchase subscription 
 not renewable"
 
+[node name="FetchActiveAutoRenewableSubscriptionsButton" type="Button" parent="MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+disabled = true
+text = "Fetch active subscriptions
+auto-renewable "
+
 [node name="RestoreButton" type="Button" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(0, 160)
+custom_minimum_size = Vector2(0, 130)
 layout_mode = 2
 text = "Restore purchases"
 
@@ -73,4 +80,5 @@ horizontal_alignment = 1
 [connection signal="pressed" from="MarginContainer/VBoxContainer/PurchaseNonConsumableButton" to="." method="_on_purchase_non_consumable_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/PurchaseSubscriptionButton" to="." method="_on_purchase_subscription_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/PurchaseSubscriptionNorenewButton" to="." method="_on_purchase_subscription_norenew_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/FetchActiveAutoRenewableSubscriptionsButton" to="." method="_on_fetch_active_auto_renewable_subscriptions_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/RestoreButton" to="." method="_on_restore_button_pressed"]

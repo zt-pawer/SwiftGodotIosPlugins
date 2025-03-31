@@ -5,12 +5,14 @@ extends Control
 var iap_items : Array[String] = ['consumable1','noconsumable1','subscription1','SubscriptioGroup','NoSubscription1']
 var _inapppurchase: InAppPurchase
 var _products : Dictionary = {}
+var _active_auto_renewable_subscription_products : Dictionary = {}
 
 func _ready() -> void:
 	if _inapppurchase == null && ClassDB.class_exists("InAppPurchase"):
 		_inapppurchase = ClassDB.instantiate("InAppPurchase")
 		_inapppurchase.in_app_purchase_fetch_success.connect(_on_in_app_purchase_fetch_success)
 		_inapppurchase.in_app_purchase_fetch_error.connect(_on_in_app_purchase_fetch_error)
+		_inapppurchase.in_app_purchase_fetch_active_auto_renewable_subscriptions(_on_in_app_purchase_fetch_active_auto_renewable_subscriptions)
 		_inapppurchase.in_app_purchase_success.connect(_on_in_app_purchase_success)
 		_inapppurchase.in_app_purchase_error.connect(_on_in_app_purchase_error)
 		_inapppurchase.in_app_purchase_restore_success.connect(_on_in_app_purchase_restore_success)
@@ -35,6 +37,16 @@ func _on_in_app_purchase_fetch_success(products: Array[InAppPurchaseProduct]) ->
 	$MarginContainer/VBoxContainer/PurchaseNonConsumableButton.disabled = false
 	$MarginContainer/VBoxContainer/PurchaseSubscriptionButton.disabled = false
 	$MarginContainer/VBoxContainer/PurchaseSubscriptionNorenewButton.disabled = false
+	$MarginContainer/VBoxContainer/FetchActiveAutoRenewableSubscriptionsButton.disabled = false
+
+
+func _on_in_app_purchase_fetch_active_auto_renewable_subscriptions(products: Array[InAppPurchaseProduct]) -> void:
+	status_label.text = "Active auto-renewable subscription products descriptions received"
+	for product in products:
+		status_label.text = "%s" % product.identifier
+		print("%s - %s - %s - %s - %s" % [product.identifier, product.displayName, product.longDescription, product.displayPrice, str(product.type)])
+		_active_auto_renewable_subscription_products[product.identifier] = product
+
 
 func _on_in_app_purchase_success(message: String) -> void:
 	status_label.text = "Product %s purchased" % message
@@ -72,6 +84,10 @@ func _on_purchase_subscription_button_pressed() -> void:
 
 func _on_purchase_subscription_norenew_button_pressed() -> void:
 	_purchase(4)
+
+
+func _on_fetch_active_auto_renewable_subscriptions_button_pressed() -> void:
+	_inapppurchase.fetchActiveAutoRenewableSubscriptions()
 
 
 func _on_restore_button_pressed() -> void:
