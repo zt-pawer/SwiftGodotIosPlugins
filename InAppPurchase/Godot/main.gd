@@ -12,7 +12,7 @@ func _ready() -> void:
 		_inapppurchase = ClassDB.instantiate("InAppPurchase")
 		_inapppurchase.in_app_purchase_fetch_success.connect(_on_in_app_purchase_fetch_success)
 		_inapppurchase.in_app_purchase_fetch_error.connect(_on_in_app_purchase_fetch_error)
-		_inapppurchase.in_app_purchase_fetch_active_auto_renewable_subscriptions(_on_in_app_purchase_fetch_active_auto_renewable_subscriptions)
+		_inapppurchase.in_app_purchase_fetch_active_auto_renewable_subscriptions.connect(_on_in_app_purchase_fetch_active_auto_renewable_subscriptions)
 		_inapppurchase.in_app_purchase_success.connect(_on_in_app_purchase_success)
 		_inapppurchase.in_app_purchase_error.connect(_on_in_app_purchase_error)
 		_inapppurchase.in_app_purchase_restore_success.connect(_on_in_app_purchase_restore_success)
@@ -41,11 +41,11 @@ func _on_in_app_purchase_fetch_success(products: Array[InAppPurchaseProduct]) ->
 
 
 func _on_in_app_purchase_fetch_active_auto_renewable_subscriptions(products: Array[InAppPurchaseProduct]) -> void:
-	status_label.text = "Active auto-renewable subscription products descriptions received"
 	for product in products:
 		status_label.text = "%s" % product.identifier
 		print("%s - %s - %s - %s - %s" % [product.identifier, product.displayName, product.longDescription, product.displayPrice, str(product.type)])
 		_active_auto_renewable_subscription_products[product.identifier] = product
+	status_label.text = "Active subscriptions received: %d" % len(_active_auto_renewable_subscription_products)
 
 
 func _on_in_app_purchase_success(message: String) -> void:
