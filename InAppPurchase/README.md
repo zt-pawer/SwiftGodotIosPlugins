@@ -18,7 +18,7 @@ func _ready() -> void:
 		_inapppurchase = ClassDB.instantiate("InAppPurchase")
 		_inapppurchase.in_app_purchase_fetch_success.connect(_on_in_app_purchase_fetch_success)
 		_inapppurchase.in_app_purchase_fetch_error.connect(_on_in_app_purchase_fetch_error)
-		_inapppurchase.in_app_purchase_fetch_active_auto_renewable_subscriptions(_on_in_app_purchase_fetch_active_auto_renewable_subscriptions)
+		_inapppurchase.in_app_purchase_fetch_active_auto_renewable_subscriptions.connect(_on_in_app_purchase_fetch_active_auto_renewable_subscriptions)
 		_inapppurchase.in_app_purchase_success.connect(_on_in_app_purchase_success)
 		_inapppurchase.in_app_purchase_error.connect(_on_in_app_purchase_error)
 		_inapppurchase.in_app_purchase_restore_success.connect(_on_in_app_purchase_restore_success)
