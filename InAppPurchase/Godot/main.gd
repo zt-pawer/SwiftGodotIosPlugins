@@ -5,7 +5,7 @@ extends Control
 var iap_items : Array[String] = ['consumable1','noconsumable1','subscription1','SubscriptioGroup','NoSubscription1']
 var _inapppurchase: InAppPurchase
 var _products : Dictionary = {}
-var _active_auto_renewable_subscription_products : Dictionary = {}
+var _active_auto_renewable_subscription_product_ids : Array[Variant]
 
 func _ready() -> void:
 	if _inapppurchase == null && ClassDB.class_exists("InAppPurchase"):
@@ -40,12 +40,12 @@ func _on_in_app_purchase_fetch_success(products: Array[InAppPurchaseProduct]) ->
 	$MarginContainer/VBoxContainer/FetchActiveAutoRenewableSubscriptionsButton.disabled = false
 
 
-func _on_in_app_purchase_fetch_active_auto_renewable_subscriptions(products: Array[InAppPurchaseProduct]) -> void:
-	for product in products:
-		status_label.text = "%s" % product.identifier
-		print("%s - %s - %s - %s - %s" % [product.identifier, product.displayName, product.longDescription, product.displayPrice, str(product.type)])
-		_active_auto_renewable_subscription_products[product.identifier] = product
-	status_label.text = "Active subscriptions received: %d" % len(_active_auto_renewable_subscription_products)
+func _on_in_app_purchase_fetch_active_auto_renewable_subscriptions(product_ids: Array[Variant]) -> void:
+	_active_auto_renewable_subscription_product_ids.clear()
+	for product_id in product_ids:
+		print("%s" % product_id)
+		_active_auto_renewable_subscription_product_ids.append(product_id)
+	status_label.text = "Active subscriptions received: %d" % len(_active_auto_renewable_subscription_product_ids)
 
 
 func _on_in_app_purchase_success(message: String) -> void:
@@ -56,9 +56,11 @@ func _on_in_app_purchase_error(error: int, message: String) -> void:
 	status_label.text = message
 
 
-func _on_in_app_purchase_restore_success(products: Array[Variant]) -> void:
-	for product in products:
-		status_label.text = str(product)
+func _on_in_app_purchase_restore_success(product_ids: Array[Variant]) -> void:
+	print("Products restored")
+	for product_id in product_ids:
+		print("%s" % product_id)
+		status_label.text = str(product_id)
 
 
 func _on_in_app_purchase_restore_error(error: int, message: String) -> void:

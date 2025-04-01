@@ -30,10 +30,10 @@ The Godot method signature required
 ```
 func _on_in_app_purchase_fetch_error(error: int, message: String) -> void:
 func _on_in_app_purchase_fetch_success(products: Array[InAppPurchaseProduct]) -> void:
-func _on_in_app_purchase_fetch_active_auto_renewable_subscriptions(products: Array[Variant]) -> void:
+func _on_in_app_purchase_fetch_active_auto_renewable_subscriptions(product_ids: Array[Variant]) -> void:
 func _on_in_app_purchase_success(message: String) -> void:
 func _on_in_app_purchase_error(error: int, message: String) -> void:
-func _on_in_app_purchase_restore_success(products: Array[Variant]) -> void:
+func _on_in_app_purchase_restore_success(product_ids: Array[Variant]) -> void:
 func _on_in_app_purchase_restore_error(error: int, message: String) -> void:
 ```
 
@@ -51,6 +51,6 @@ func _on_in_app_purchase_restore_error(error: int, message: String) -> void:
 ## Methods
 
 - `fetchProducts(products: [String])` - Fetch all products given in input, this method **must** be called once before any purchase.
-- `fetchActiveAutoRenewableSubscriptions()` - Fetch all active auto-renewable subscriptions, returning a list of products.
+- `fetchActiveAutoRenewableSubscriptions()` - Fetch all active auto-renewable subscriptions, returning a list of product ids.
 - `purchaseProduct(productID: String)` - Purchase a given pruduct.
-- `restorePurchases()` - Restore all the previous purchased products, returning a list of products.
+- `restorePurchases()` - Restore all the previous purchased products, returning a list of product ids.
