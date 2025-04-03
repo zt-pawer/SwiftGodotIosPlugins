@@ -63,27 +63,27 @@ class InAppPurchase: Object , ObservableObject {
     private var updateListenerTask: Task<Void, Never>?
 
     /// @Signal
-    /// Error suring the signing process
+    /// Error during the signing process
     @Signal var inAppPurchaseSuccess: SignalWithArguments<String>
     /// @Signal
-    /// Error suring the signing process
+    /// Error during the signing process
     @Signal var inAppPurchaseFetchSuccess:
         SignalWithArguments<ObjectCollection<InAppPurchaseProduct>>
     /// @Signal
-    /// Error suring the signing process
+    /// Error during the signing process
     @Signal var inAppPurchaseFetchError: SignalWithArguments<Int, String>
     /// @Signal
-    /// Error suring the signing process
+    /// Error during the signing process
     @Signal var inAppPurchaseFetchActiveAutoRenewableSubscriptions:
         SignalWithArguments<GArray>
     /// @Signal
-    /// Error suring the signing process
+    /// Error during the signing process
     @Signal var inAppPurchaseError: SignalWithArguments<Int, String>
     /// @Signal
-    /// Error suring the signing process
+    /// Error during the signing process
     @Signal var inAppPurchaseRestoreSuccess: SignalWithArguments<GArray>
     /// @Signal
-    /// Error suring the signing process
+    /// Error during the signing process
     @Signal var inAppPurchaseRestoreError: SignalWithArguments<Int, String>
 
     required override init() {
