@@ -74,6 +74,10 @@ class InAppPurchase: Object , ObservableObject {
     @Signal var inAppPurchaseFetchError: SignalWithArguments<Int, String>
     /// @Signal
     /// Error suring the signing process
+    @Signal var inAppPurchaseFetchActiveAutoRenewableSubscriptions:
+        SignalWithArguments<GArray>
+    /// @Signal
+    /// Error suring the signing process
     @Signal var inAppPurchaseError: SignalWithArguments<Int, String>
     /// @Signal
     /// Error suring the signing process
@@ -120,6 +124,18 @@ class InAppPurchase: Object , ObservableObject {
                 }
                 self.inAppPurchaseFetchSuccess.emit(iapProducts)
             })
+    }
+
+    /// @Callable
+    ///
+    /// Synchronously fetches active auto-renewable subscriptions (does not block UI, callback when done)
+    @Callable
+    func fetchActiveAutoRenewableSubscriptions() {
+        fetchActiveAutoRenewableSubscriptionsAsync(completion: { products in
+            var productsArray = GArray()
+            products.forEach { productsArray.append(Variant($0)) }
+            self.inAppPurchaseFetchActiveAutoRenewableSubscriptions.emit(productsArray)
+        })
     }
 
     /// @Callable

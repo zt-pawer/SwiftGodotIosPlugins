@@ -5,12 +5,14 @@ extends Control
 var iap_items : Array[String] = ['consumable1','noconsumable1','subscription1','SubscriptioGroup','NoSubscription1']
 var _inapppurchase: InAppPurchase
 var _products : Dictionary = {}
+var _active_auto_renewable_subscription_product_ids : Array[Variant]
 
 func _ready() -> void:
 	if _inapppurchase == null && ClassDB.class_exists("InAppPurchase"):
 		_inapppurchase = ClassDB.instantiate("InAppPurchase")
 		_inapppurchase.in_app_purchase_fetch_success.connect(_on_in_app_purchase_fetch_success)
 		_inapppurchase.in_app_purchase_fetch_error.connect(_on_in_app_purchase_fetch_error)
+		_inapppurchase.in_app_purchase_fetch_active_auto_renewable_subscriptions.connect(_on_in_app_purchase_fetch_active_auto_renewable_subscriptions)
 		_inapppurchase.in_app_purchase_success.connect(_on_in_app_purchase_success)
 		_inapppurchase.in_app_purchase_error.connect(_on_in_app_purchase_error)
 		_inapppurchase.in_app_purchase_restore_success.connect(_on_in_app_purchase_restore_success)
@@ -35,6 +37,16 @@ func _on_in_app_purchase_fetch_success(products: Array[InAppPurchaseProduct]) ->
 	$MarginContainer/VBoxContainer/PurchaseNonConsumableButton.disabled = false
 	$MarginContainer/VBoxContainer/PurchaseSubscriptionButton.disabled = false
 	$MarginContainer/VBoxContainer/PurchaseSubscriptionNorenewButton.disabled = false
+	$MarginContainer/VBoxContainer/FetchActiveAutoRenewableSubscriptionsButton.disabled = false
+
+
+func _on_in_app_purchase_fetch_active_auto_renewable_subscriptions(product_ids: Array[Variant]) -> void:
+	_active_auto_renewable_subscription_product_ids.clear()
+	for product_id in product_ids:
+		print("%s" % product_id)
+		_active_auto_renewable_subscription_product_ids.append(product_id)
+	status_label.text = "Active subscriptions received: %d" % len(_active_auto_renewable_subscription_product_ids)
+
 
 func _on_in_app_purchase_success(message: String) -> void:
 	status_label.text = "Product %s purchased" % message
@@ -44,9 +56,11 @@ func _on_in_app_purchase_error(error: int, message: String) -> void:
 	status_label.text = message
 
 
-func _on_in_app_purchase_restore_success(products: Array[Variant]) -> void:
-	for product in products:
-		status_label.text = str(product)
+func _on_in_app_purchase_restore_success(product_ids: Array[Variant]) -> void:
+	print("Products restored")
+	for product_id in product_ids:
+		print("%s" % product_id)
+		status_label.text = str(product_id)
 
 
 func _on_in_app_purchase_restore_error(error: int, message: String) -> void:
@@ -72,6 +86,10 @@ func _on_purchase_subscription_button_pressed() -> void:
 
 func _on_purchase_subscription_norenew_button_pressed() -> void:
 	_purchase(4)
+
+
+func _on_fetch_active_auto_renewable_subscriptions_button_pressed() -> void:
+	_inapppurchase.fetchActiveAutoRenewableSubscriptions()
 
 
 func _on_restore_button_pressed() -> void:
