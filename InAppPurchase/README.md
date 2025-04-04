@@ -19,6 +19,7 @@ func _ready() -> void:
 		_inapppurchase.in_app_purchase_fetch_success.connect(_on_in_app_purchase_fetch_success)
 		_inapppurchase.in_app_purchase_fetch_error.connect(_on_in_app_purchase_fetch_error)
 		_inapppurchase.in_app_purchase_fetch_active_auto_renewable_subscriptions.connect(_on_in_app_purchase_fetch_active_auto_renewable_subscriptions)
+		_inapppurchase.in_app_purchase_fetch_auto_renewable_transaction_counts.connect(_on_in_app_purchase_fetch_auto_renewable_transaction_counts)
 		_inapppurchase.in_app_purchase_success.connect(_on_in_app_purchase_success)
 		_inapppurchase.in_app_purchase_error.connect(_on_in_app_purchase_error)
 		_inapppurchase.in_app_purchase_restore_success.connect(_on_in_app_purchase_restore_success)
@@ -31,6 +32,7 @@ The Godot method signature required
 func _on_in_app_purchase_fetch_error(error: int, message: String) -> void:
 func _on_in_app_purchase_fetch_success(products: Array[InAppPurchaseProduct]) -> void:
 func _on_in_app_purchase_fetch_active_auto_renewable_subscriptions(product_ids: Array[Variant]) -> void:
+func _on_in_app_purchase_fetch_auto_renewable_transaction_counts(counts: Dictionary) -> void:
 func _on_in_app_purchase_success(message: String) -> void:
 func _on_in_app_purchase_error(error: int, message: String) -> void:
 func _on_in_app_purchase_restore_success(product_ids: Array[Variant]) -> void:
@@ -43,6 +45,7 @@ func _on_in_app_purchase_restore_error(error: int, message: String) -> void:
 - `in_app_purchase_fetch_success` SignalWithArguments<ObjectCollection<InAppPurchaseProduct>>
 - `in_app_purchase_fetch_error` SignalWithArguments<Int,Dictionary>
 - `in_app_purchase_fetch_active_auto_renewable_subscriptions` SignalWithArguments<GArray>
+- `in_app_purchase_fetch_auto_renewable_transaction_counts` SignalWithArguments<GDictionary>
 - `in_app_purchase_success` SignalWithArguments<String>
 - `in_app_purchase_error` SignalWithArguments<Int,Dictionary>
 - `in_app_purchase_restore_success` SignalWithArguments<GArray>
@@ -52,5 +55,6 @@ func _on_in_app_purchase_restore_error(error: int, message: String) -> void:
 
 - `fetchProducts(products: [String])` - Fetch all products given in input, this method **must** be called once before any purchase.
 - `fetchActiveAutoRenewableSubscriptions()` - Fetch all active auto-renewable subscriptions, returning a list of product ids.
+- `fetchAutoRenewableTransactionCounts()` - Fetch all auto-renewable subscription transaction counts. Returns a dictionary, with product ids as the key, and the number of transactions as the value.  Useful for tracking monthly awards, etc.
 - `purchaseProduct(productID: String)` - Purchase a given pruduct.
 - `restorePurchases()` - Restore all the previous purchased products, returning a list of product ids.

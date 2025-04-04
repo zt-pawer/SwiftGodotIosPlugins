@@ -58,6 +58,7 @@ class InAppPurchase: Object , ObservableObject {
     var availableProducts: [InAppPurchaseProduct] = []
     var purchasedProductIDs: Set<String> = []
     internal var products_cached: [Product] = []
+    internal var allAutoRenewableSubscriptionTransactions = Set<Transaction>()
 
     // StoreKit's transaction listener
     private var updateListenerTask: Task<Void, Never>?
@@ -73,9 +74,13 @@ class InAppPurchase: Object , ObservableObject {
     /// Error signal during products fetch process
     @Signal var inAppPurchaseFetchError: SignalWithArguments<Int, String>
     /// @Signal
-    /// Success signal during renewable products fetch process
+    /// Success signal during active renewable products fetch process
     @Signal var inAppPurchaseFetchActiveAutoRenewableSubscriptions:
         SignalWithArguments<GArray>
+    /// @Signal
+    /// Success signal during renewable transaction counts fetch process
+    @Signal var inAppPurchaseFetchAutoRenewableTransactionCounts:
+        SignalWithArguments<GDictionary>
     /// @Signal
     /// Error signal during purchase process
     @Signal var inAppPurchaseError: SignalWithArguments<Int, String>
@@ -140,6 +145,28 @@ class InAppPurchase: Object , ObservableObject {
 
     /// @Callable
     ///
+    /// Synchronously fetches all auto-renewable subscription transactions (does not block UI, callback when done)
+    @Callable
+    func fetchAutoRenewableTransactionCounts() {
+        fetchAutoRenewableTransactionsAsync(completion: { transactions in
+            
+            // Tally the transaction count for each subscription.
+            self.allAutoRenewableSubscriptionTransactions = self.allAutoRenewableSubscriptionTransactions.union(transactions)
+            var autoRenewableTransactionCounts = [String : Int]()
+            for transaction in self.allAutoRenewableSubscriptionTransactions {
+                let transactionCount = autoRenewableTransactionCounts[transaction.productID] ?? 0
+                autoRenewableTransactionCounts[transaction.productID] = transactionCount + transaction.purchasedQuantity
+            }
+
+            // Convert the dictionary to a GDictionary, and pass it back to Godot via the signal.
+            var countGDictionary = GDictionary()
+            autoRenewableTransactionCounts.forEach { countGDictionary[Variant($0.key)] = Variant($0.value) }
+            self.inAppPurchaseFetchAutoRenewableTransactionCounts.emit(countGDictionary)
+        })
+    }
+
+    /// @Callable
+    ///
     /// Synchronously purchase a product (does not block UI, callback when done)
     @Callable
     func purchaseProduct(_ productID: String) {
@@ -179,6 +206,13 @@ class InAppPurchase: Object , ObservableObject {
                 switch result {
                 case .verified(let transaction):
                     await self.handleTransaction(transaction)
+                    
+                    // Store any auto-renewable subscription transactions.
+                    if .autoRenewable == transaction.productType
+                        && transaction.revocationDate == nil
+                        && transaction.isUpgraded == false {
+                            self.allAutoRenewableSubscriptionTransactions.insert(transaction)
+                    }
                 case .unverified(_, let error):
                     GD.printErr("Unverified transaction: \(error)")
                 }
