@@ -119,15 +119,19 @@ class InAppPurchase: Object , ObservableObject {
             with: products,
             completion: { error in
                 guard error == nil else {
-                    self.inAppPurchaseFetchError.emit(
-                        error!.rawValue, error!.localizedDescription)
+                    DispatchQueue.main.async {
+                        self.inAppPurchaseFetchError.emit(
+                            error!.rawValue, error!.localizedDescription)
+                    }
                     return
                 }
                 var iapProducts = ObjectCollection<InAppPurchaseProduct>()
                 for product in self.products_cached {
                     iapProducts.append(InAppPurchaseProduct(product: product))
                 }
-                self.inAppPurchaseFetchSuccess.emit(iapProducts)
+                DispatchQueue.main.async {
+                    self.inAppPurchaseFetchSuccess.emit(iapProducts)
+                }
             })
     }
 
@@ -139,7 +143,9 @@ class InAppPurchase: Object , ObservableObject {
         fetchActiveAutoRenewableSubscriptionsAsync(completion: { products in
             var productsArray = GArray()
             products.forEach { productsArray.append(Variant($0)) }
-            self.inAppPurchaseFetchActiveAutoRenewableSubscriptions.emit(productsArray)
+            DispatchQueue.main.async {
+                self.inAppPurchaseFetchActiveAutoRenewableSubscriptions.emit(productsArray)
+            }
         })
     }
 
@@ -161,7 +167,9 @@ class InAppPurchase: Object , ObservableObject {
             // Convert the dictionary to a GDictionary, and pass it back to Godot via the signal.
             var countGDictionary = GDictionary()
             autoRenewableTransactionCounts.forEach { countGDictionary[Variant($0.key)] = Variant($0.value) }
-            self.inAppPurchaseFetchAutoRenewableTransactionCounts.emit(countGDictionary)
+            DispatchQueue.main.async {
+                self.inAppPurchaseFetchAutoRenewableTransactionCounts.emit(countGDictionary)
+            }
         })
     }
 
@@ -174,11 +182,15 @@ class InAppPurchase: Object , ObservableObject {
             productID,
             completion: { error in
                 guard error == nil else {
-                    self.inAppPurchaseError.emit(
-                        error!.rawValue, error!.localizedDescription)
+                    DispatchQueue.main.async {
+                        self.inAppPurchaseError.emit(
+                            error!.rawValue, error!.localizedDescription)
+                    }
                     return
                 }
-                self.inAppPurchaseSuccess.emit(productID)
+                DispatchQueue.main.async {
+                    self.inAppPurchaseSuccess.emit(productID)
+                }
             })
     }
 
@@ -189,13 +201,17 @@ class InAppPurchase: Object , ObservableObject {
     func restorePurchases() {
         restorePurchasesAsync(completion: { products, error in
             guard error == nil else {
-                self.inAppPurchaseRestoreError.emit(
-                    error!.rawValue, error!.localizedDescription)
+                DispatchQueue.main.async {
+                    self.inAppPurchaseRestoreError.emit(
+                        error!.rawValue, error!.localizedDescription)
+                }
                 return
             }
             var productsArray = GArray()
             products.forEach { productsArray.append(Variant($0)) }
-            self.inAppPurchaseRestoreSuccess.emit(productsArray)
+            DispatchQueue.main.async {
+                self.inAppPurchaseRestoreSuccess.emit(productsArray)
+            }
         })
     }
 
