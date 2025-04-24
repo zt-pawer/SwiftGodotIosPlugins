@@ -198,8 +198,8 @@ class InAppPurchase: Object , ObservableObject {
     ///
     /// Synchronously restore purchases (does not block UI, callback when done)
     @Callable
-    func restorePurchases() {
-        restorePurchasesAsync(completion: { products, error in
+    func restorePurchases(skipSync noSync:Bool = false) {
+        restorePurchasesAsync(skipSync: noSync, completion: { products, error in
             guard error == nil else {
                 DispatchQueue.main.async {
                     self.inAppPurchaseRestoreError.emit(

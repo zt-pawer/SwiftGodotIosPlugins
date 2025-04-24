@@ -124,12 +124,13 @@ extension InAppPurchase {
     }
     
     internal func restorePurchasesAsync(
+        skipSync noSync: Bool,
         completion: @escaping ([String], InAppPurchaseError?) -> Void
     ) {
         Task {
             do {
                 // Perform a sync operation
-                try await AppStore.sync()
+                if !noSync { try await AppStore.sync() }
 
                 var restoredProducts: [String] = []
                 // Fetch all current entitlements and filter valid transactions

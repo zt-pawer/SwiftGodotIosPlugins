@@ -2,6 +2,13 @@ extends Control
 
 @onready var status_label: Label = $MarginContainer/VBoxContainer/StatusLabel
 
+@onready var purchase_consumable_button: Button = $MarginContainer/VBoxContainer/PurchaseConsumableButton
+@onready var purchase_non_consumable_button: Button = $MarginContainer/VBoxContainer/PurchaseNonConsumableButton
+@onready var purchase_subscription_button: Button = $MarginContainer/VBoxContainer/PurchaseSubscriptionButton
+@onready var purchase_subscription_norenew_button: Button = $MarginContainer/VBoxContainer/PurchaseSubscriptionNorenewButton
+@onready var fetch_active_auto_renewable_subscriptions_button: Button = $MarginContainer/VBoxContainer/FetchActiveAutoRenewableSubscriptionsButton
+@onready var fetch_auto_renewable_transaction_counts_button: Button = $MarginContainer/VBoxContainer/FetchAutoRenewableTransactionCountsButton
+
 var iap_items : Array[String] = ['consumable1','noconsumable1','subscription1','SubscriptioGroup','NoSubscription1']
 var _inapppurchase: InAppPurchase
 var _products : Dictionary = {}
@@ -29,17 +36,17 @@ func _on_in_app_purchase_fetch_error(error: int, message: String) -> void:
 
 
 func _on_in_app_purchase_fetch_success(products: Array[InAppPurchaseProduct]) -> void:
-	status_label.text = "Products descriptions received"
+	status_label.call_deferred("set_text", "Products descriptions received")
 	for product in products:
 		status_label.text = "%s" % product.identifier
 		print("%s - %s - %s - %s - %s" % [product.identifier, product.displayName, product.longDescription, product.displayPrice, str(product.type)])
 		_products[product.identifier] = product
-	$MarginContainer/VBoxContainer/PurchaseConsumableButton.disabled = false
-	$MarginContainer/VBoxContainer/PurchaseNonConsumableButton.disabled = false
-	$MarginContainer/VBoxContainer/PurchaseSubscriptionButton.disabled = false
-	$MarginContainer/VBoxContainer/PurchaseSubscriptionNorenewButton.disabled = false
-	$MarginContainer/VBoxContainer/FetchActiveAutoRenewableSubscriptionsButton.disabled = false
-	$MarginContainer/VBoxContainer/FetchAutoRenewableTransactionCountsButton.disabled = false
+	purchase_consumable_button.call_deferred("set_disabled", false)
+	purchase_non_consumable_button.call_deferred("set_disabled", false)
+	purchase_subscription_button.call_deferred("set_disabled", false)
+	purchase_subscription_norenew_button.call_deferred("set_disabled", false)
+	fetch_active_auto_renewable_subscriptions_button.call_deferred("set_disabled", false)
+	fetch_auto_renewable_transaction_counts_button.call_deferred("set_disabled", false)
 
 
 func _on_in_app_purchase_fetch_active_auto_renewable_subscriptions(product_ids: Array[Variant]) -> void:

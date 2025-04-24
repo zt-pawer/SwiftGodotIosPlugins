@@ -13,7 +13,7 @@ let package = Package(
             targets: ["InAppPurchase"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "727a0bbe44d9fa4b4f6d38e78ba12e5b395bba4e")
+        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "7e4c34ccbc149cd61de3c8fa76a09f84bf5583f5")
     ],
     targets: [
         .target(
