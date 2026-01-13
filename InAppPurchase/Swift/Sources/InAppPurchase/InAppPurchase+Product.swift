@@ -24,13 +24,19 @@ extension InAppPurchase {
 
     }
 
+    /// Transaction result containing transaction and JWS representation
+    internal struct TransactionResult {
+        let transaction: Transaction
+        let jwsRepresentation: String
+    }
+
     internal func purchaseProductAsync(
         _ productID: String,
-        completion: @escaping (InAppPurchaseError?) -> Void
+        completion: @escaping (TransactionResult?, InAppPurchaseError?) -> Void
     ) {
         guard let product = products_cached.first(where: { $0.id == productID })
         else {
-            completion(.productNotFound)
+            completion(nil, .productNotFound)
             return
         }
         Task {
@@ -41,18 +47,22 @@ extension InAppPurchase {
                     switch verification {
                     case .verified(let transaction):
                         await self.handleTransaction(transaction)
-                        completion(nil)
+                        let transactionResult = TransactionResult(
+                            transaction: transaction,
+                            jwsRepresentation: verification.jwsRepresentation
+                        )
+                        completion(transactionResult, nil)
                     case .unverified(_, let error):
-                        completion(.failedToVerify)
+                        completion(nil, .failedToVerify)
                     }
                 case .pending:
-                    completion(.pending)
+                    completion(nil, .pending)
                 case .userCancelled:
-                    completion(.failedToPurchase)
+                    completion(nil, .failedToPurchase)
                 }
             }
             catch {
-                completion(.unknownError)
+                completion(nil, .unknownError)
             }
         }
     }

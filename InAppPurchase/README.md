@@ -21,9 +21,11 @@ func _ready() -> void:
 		_inapppurchase.in_app_purchase_fetch_active_auto_renewable_subscriptions.connect(_on_in_app_purchase_fetch_active_auto_renewable_subscriptions)
 		_inapppurchase.in_app_purchase_fetch_auto_renewable_transaction_counts.connect(_on_in_app_purchase_fetch_auto_renewable_transaction_counts)
 		_inapppurchase.in_app_purchase_success.connect(_on_in_app_purchase_success)
+		_inapppurchase.in_app_purchase_success_with_transaction.connect(_on_in_app_purchase_success_with_transaction)
 		_inapppurchase.in_app_purchase_error.connect(_on_in_app_purchase_error)
 		_inapppurchase.in_app_purchase_restore_success.connect(_on_in_app_purchase_restore_success)
 		_inapppurchase.in_app_purchase_restore_error.connect(_on_in_app_purchase_restore_error)
+
 ```
 
 The Godot method signature required
@@ -34,6 +36,7 @@ func _on_in_app_purchase_fetch_success(products: Array[InAppPurchaseProduct]) ->
 func _on_in_app_purchase_fetch_active_auto_renewable_subscriptions(product_ids: Array[Variant]) -> void:
 func _on_in_app_purchase_fetch_auto_renewable_transaction_counts(counts: Dictionary) -> void:
 func _on_in_app_purchase_success(message: String) -> void:
+func _on_in_app_purchase_success_with_transaction(result: Dictionary) -> void:
 func _on_in_app_purchase_error(error: int, message: String) -> void:
 func _on_in_app_purchase_restore_success(product_ids: Array[Variant]) -> void:
 func _on_in_app_purchase_restore_error(error: int, message: String) -> void:
@@ -42,14 +45,25 @@ func _on_in_app_purchase_restore_error(error: int, message: String) -> void:
 # Technical details
 
 ## Signals
-- `in_app_purchase_fetch_success` SignalWithArguments<ObjectCollection<InAppPurchaseProduct>>
-- `in_app_purchase_fetch_error` SignalWithArguments<Int,Dictionary>
-- `in_app_purchase_fetch_active_auto_renewable_subscriptions` SignalWithArguments<GArray>
-- `in_app_purchase_fetch_auto_renewable_transaction_counts` SignalWithArguments<GDictionary>
-- `in_app_purchase_success` SignalWithArguments<String>
-- `in_app_purchase_error` SignalWithArguments<Int,Dictionary>
-- `in_app_purchase_restore_success` SignalWithArguments<GArray>
-- `in_app_purchase_restore_error` SignalWithArguments<Int,Dictionary>
+- `in_app_purchase_fetch_success` SignalWithArguments\<ObjectCollection\<InAppPurchaseProduct>>
+- `in_app_purchase_fetch_error` SignalWithArguments\<Int,Dictionary>
+- `in_app_purchase_fetch_active_auto_renewable_subscriptions` SignalWithArguments\<GArray>
+- `in_app_purchase_fetch_auto_renewable_transaction_counts` SignalWithArguments\<GDictionary>
+- `in_app_purchase_success` SignalWithArguments\<String>
+- `in_app_purchase_success_with_transaction` SignalWithArguments\<GDictionary>
+- `in_app_purchase_error` SignalWithArguments\<Int,Dictionary>
+- `in_app_purchase_restore_success` SignalWithArguments\<GArray>
+- `in_app_purchase_restore_error` SignalWithArguments\<Int,Dictionary>
+
+### Transaction Data Exposed in `in_app_purchase_success_with_transaction`
+| Key                       | Type   | Description                               |
+| ------------------------- | ------ | ----------------------------------------- |
+| `product_id`              | String | Product identifier                        |
+| `transaction_id`          | String | Unique transaction ID (UInt64 as String)  |
+| `original_transaction_id` | String | For subscription renewals                 |
+| `jws_representation`      | String | Cryptographic proof for server validation |
+| `purchase_date`           | String | ISO8601 formatted timestamp               |
+| `app_account_token`       | String | Optional UUID (empty string if not set)   |
 
 ## Methods
 

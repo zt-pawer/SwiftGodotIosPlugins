@@ -5,6 +5,7 @@
 //  Created by ZT Pawer on 12/30/24.
 //
 
+import Foundation
 import StoreKit
 import SwiftGodot
 
@@ -55,6 +56,13 @@ enum InAppPurchaseError: Int, Error {
 class InAppPurchase: Object , ObservableObject {
 
     static var shared: InAppPurchase?
+
+    // Static ISO8601 formatter for performance (creating formatters is expensive)
+    private static let iso8601Formatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
     var availableProducts: [InAppPurchaseProduct] = []
     var purchasedProductIDs: Set<String> = []
     internal var products_cached: [Product] = []
@@ -64,8 +72,13 @@ class InAppPurchase: Object , ObservableObject {
     private var updateListenerTask: Task<Void, Never>?
 
     /// @Signal
-    /// Success signal during purchase process
+    /// Success signal during purchase process (backward compatible - emits only productID)
     @Signal var inAppPurchaseSuccess: SignalWithArguments<String>
+    /// @Signal
+    /// Success signal with full transaction data for server-side validation
+    /// Dictionary contains: product_id (String), transaction_id (String), original_transaction_id (String),
+    /// jws_representation (String), purchase_date (String ISO8601), app_account_token (String or empty)
+    @Signal var inAppPurchaseSuccessWithTransaction: SignalWithArguments<GDictionary>
     /// @Signal
     /// Success signal during products fetch process
     @Signal var inAppPurchaseFetchSuccess:
@@ -180,8 +193,8 @@ class InAppPurchase: Object , ObservableObject {
     func purchaseProduct(_ productID: String) {
         purchaseProductAsync(
             productID,
-            completion: { error in
-                guard error == nil else {
+            completion: { result, error in
+                guard error == nil, let result = result else {
                     DispatchQueue.main.async {
                         self.inAppPurchaseError.emit(
                             error!.rawValue, error!.localizedDescription)
@@ -189,9 +202,44 @@ class InAppPurchase: Object , ObservableObject {
                     return
                 }
                 DispatchQueue.main.async {
+                    // Emit backward-compatible signal with just productID
                     self.inAppPurchaseSuccess.emit(productID)
+
+                    // Build transaction data dictionary for server-side validation
+                    let transactionData = self.buildTransactionDictionary(from: result)
+                    self.inAppPurchaseSuccessWithTransaction.emit(transactionData)
                 }
             })
+    }
+
+    /// Builds a GDictionary containing transaction data for server-side validation
+    private func buildTransactionDictionary(from result: TransactionResult) -> GDictionary {
+        var dict = GDictionary()
+        let transaction = result.transaction
+
+        // Product identifier
+        dict["product_id"] = Variant(transaction.productID)
+
+        // Transaction ID (UInt64 as String for cross-platform compatibility)
+        dict["transaction_id"] = Variant(String(transaction.id))
+
+        // Original transaction ID (for subscription renewals)
+        dict["original_transaction_id"] = Variant(String(transaction.originalID))
+
+        // JWS representation - cryptographic proof for server validation
+        dict["jws_representation"] = Variant(result.jwsRepresentation)
+
+        // Purchase date in ISO8601 format (using static formatter for performance)
+        dict["purchase_date"] = Variant(Self.iso8601Formatter.string(from: transaction.purchaseDate))
+
+        // App account token (optional UUID set during purchase)
+        if let appAccountToken = transaction.appAccountToken {
+            dict["app_account_token"] = Variant(appAccountToken.uuidString)
+        } else {
+            dict["app_account_token"] = Variant("")
+        }
+
+        return dict
     }
 
     /// @Callable
