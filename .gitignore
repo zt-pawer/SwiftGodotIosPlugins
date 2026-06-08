@@ -80,6 +80,8 @@ fastlane/test_output
 
 # Local
 Releases/
+**/build-enh.sh
+**/package-lock.json
 
 # Zig
 .zig-cache

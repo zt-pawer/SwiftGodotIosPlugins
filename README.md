@@ -19,14 +19,14 @@ There are few major benefits with this version of the plugins compared to the cl
 
 # Supported Plugins
 
-Currently, SwiftGodotIosPlugins implements the Ios **GameCenter**, **ICloud** and **InAppPurchase** integration.
+Currently, SwiftGodotIosPlugins implements the iOS **GameCenter**, **ICloud**, **InAppPurchase**, and **GodotFirebase** (Firebase Core, Anonymous Auth, App Check) integration.
 
 Other iOS integrations (camera, arkit, apn, photo_picker) are under consideration.
 
 # Supported Platforms
 
 Currently, SwiftGodotIosPlugins can be used in projects targeting the iOS platforms. 
-- **macOS** is not scope at the moment.
+- **macOS** is supported where necessary for GDExtension type-parsing / design-time validation inside the Godot Editor.
 
 # Development Status
 
@@ -34,13 +34,14 @@ SwiftGodotIosPlugins is built on the GDExtension framework, which is still in an
 
 # How to use it
 
-Register the signals as indicated for each plugin and implement the methods that you need to handle. A demo application is provided for each of the plugin.
+Register the signals as indicated for each plugin and implement the methods that you need to handle. A demo application is provided for each of the plugins.
 [YouTube tutorial](https://www.youtube.com/watch?v=RcisM4x9cTo)
 
 # Technical details
 - [GameCenter](GameCenter/README.md)
 - [ICloud](ICloud/README.md)
 - [InAppPurchase](InAppPurchase/README.md)
+- [GodotFirebase](GodotFirebase/README.md)
 
 # Contributing
 

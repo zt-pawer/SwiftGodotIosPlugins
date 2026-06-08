@@ -1,0 +1,16 @@
+[configuration]
+entry_symbol = "firebase"
+compatibility_minimum = 4.2
+reloadable = true
+
+[libraries]
+macos.debug = "res://addons/iosplugins/macos/libGodotFirebase.dylib"
+macos.release = "res://addons/iosplugins/macos/libGodotFirebase.dylib"
+ios.debug = "res://addons/iosplugins/ios/GodotFirebase.framework"
+ios.release = "res://addons/iosplugins/ios/GodotFirebase.framework"
+
+[dependencies]
+macos.debug = {"res://addons/iosplugins/macos/libSwiftGodot.dylib" : ""}
+macos.release = {"res://addons/iosplugins/macos/libSwiftGodot.dylib" : ""}
+ios.debug = {"res://addons/iosplugins/ios/SwiftGodot.framework" : ""}
+ios.release = {"res://addons/iosplugins/ios/SwiftGodot.framework" : ""}
