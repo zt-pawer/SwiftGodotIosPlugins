@@ -1,14 +1,76 @@
 #!/bin/zsh
 
-# MARK: Help
+# MARK: Formatting
+BOLD="$(tput bold 2>/dev/null || echo '')"
+GREEN="$(tput setaf 2 2>/dev/null || echo '')"
+CYAN="$(tput setaf 6 2>/dev/null || echo '')"
+RED="$(tput setaf 1 2>/dev/null || echo '')"
+RESET_FORMATTING="$(tput sgr0 2>/dev/null || echo '')"
 
-# Syntax: ./build.sh [required] [all|release|debug] [all|macos|ios|simulator]"
-# Valid configurations are: debug, release, all (Default: release)
-# Valid platforms are: macos, ios & all (Default: all)
+# MARK: Default Inputs
+PACKAGE=""
+CONFIG="release"
+PLATFORM="ios"
 
-# examples:
-# ./build.sh InAppPurchase release ios
-# ./build.sh InAppPurchase debug macos 
+PACKAGE_SET=false
+CONFIG_SET=false
+PLATFORM_SET=false
+
+# MARK: Flag Parsing Loop
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -p|--package)
+      PACKAGE="$2"
+      PACKAGE_SET=true
+      shift 2
+      ;;
+    -c|--config)
+      CONFIG="$2"
+      CONFIG_SET=true
+      shift 2
+      ;;
+    -l|--platform)
+      PLATFORM="$2"
+      PLATFORM_SET=true
+      shift 2
+      ;;
+    -h|--help)
+      echo "Usage: ./build.sh <package_name> [options]"
+      echo "Options:"
+      echo "  -p, --package <name>    Package/plugin directory to build"
+      echo "  -c, --config <type>     Build configuration: debug, release (Default: release)"
+      echo "  -l, --platform <name>   Platform: macos, ios, simulator, all (Default: all)"
+      exit 0
+      ;;
+    *)
+      # Fallback to positional arguments if not a flag
+      if [[ "$PACKAGE_SET" == false ]]; then
+        PACKAGE="$1"
+        PACKAGE_SET=true
+      elif [[ "$CONFIG_SET" == false ]]; then
+        CONFIG="$1"
+        CONFIG_SET=true
+      elif [[ "$PLATFORM_SET" == false ]]; then
+        PLATFORM="$1"
+        PLATFORM_SET=true
+      fi
+      shift
+      ;;
+  esac
+done
+
+if [[ -z "$PACKAGE" ]]; then
+    echo "${BOLD}${RED}Error: Package name is required.${RESET_FORMATTING}"
+    echo "Usage: ./build.sh <package_name> [options]"
+    exit 1
+fi
+
+if [[ ! -d "$PACKAGE" ]]; then
+    echo "${BOLD}${RED}Error: Package directory '$PACKAGE' does not exist.${RESET_FORMATTING}"
+    exit 1
+fi
+
+PACKAGE_PATH="$PACKAGE/Swift"
 
 # MARK: Settings
 BINARY_PATH_IOS="Bin/ios"
@@ -17,30 +79,9 @@ BUILD_PATH_IOS=".build/arm64-apple-ios"
 BINARY_PATH_MACOS="Bin/macos"
 BUILD_PATH_MACOS=".build"
 
-# MARK: Inputs
-
-PACKAGE=$1
-CONFIG=$2
-PLATFORM=$3
-
-if [[ ! $PACKAGE ]]; then
-    PACKAGE="GameCenter"
-fi
-
-PACKAGE_PATH="$PACKAGE/Swift/"
-
-if [[ ! $CONFIG ]]; then
-	CONFIG="release"
-fi
-
-if [[ ! $PLATFORM ]]; then
-	PLATFORM="all"
-fi
-
 COPY_COMMANDS=()
 
 # MARK: Build iOS
-
 build_ios() {
 	destination="generic/platform=iOS"
 	device="iphoneos"
@@ -78,7 +119,6 @@ build_ios() {
 }
 
 # MARK: Build macOS
-
 build_macos() {
 	swift build \
 		--configuration "$1" \
@@ -110,10 +150,15 @@ build_macos() {
 }
 
 # MARK: Pre & Post process
-
 build_libs() {
 	echo "Building libraries..."
-	package_path
+	
+	# Move to the package Swift directory safely
+	cd "$PACKAGE_PATH" || {
+		echo "${BOLD}${RED}Error: Failed to enter directory $PACKAGE_PATH${RESET_FORMATTING}"
+		return 1
+	}
+
 	if [[ "$3" == "all" || "$3" == "macos" ]]; then
 		echo "${BOLD}${CYAN}Building macOS library ($2)...${RESET_FORMATTING}"
 		build_macos "$2"
@@ -124,8 +169,13 @@ build_libs() {
 		build_ios "$1" "$2" "$3"
 	fi
 
-	COPY_COMMANDS+=("cp -R Bin/ios ../Godot/addons/iosplugins")
-	COPY_COMMANDS+=("cp -R Bin/macos ../Godot/addons/iosplugins")
+	# Set up framework copy targets to Godot demo addons directory if they exist
+	if [[ -d "Bin/ios" ]]; then
+		COPY_COMMANDS+=("cp -R Bin/ios ../Godot/addons/iosplugins")
+	fi
+	if [[ -d "Bin/macos" ]]; then
+		COPY_COMMANDS+=("cp -R Bin/macos ../Godot/addons/iosplugins")
+	fi
 
 	if [[ ${#COPY_COMMANDS[@]} -gt 0 ]]; then
 		echo "${BOLD}${CYAN}Copying binaries...${RESET_FORMATTING}"
@@ -139,19 +189,15 @@ build_libs() {
 		done
 	fi
 
+	# Clean up temporary build artifacts to save disk space
+	echo "${BOLD}${CYAN}Cleaning up temporary build files...${RESET_FORMATTING}"
+	rm -rf .build Bin Package.resolved
+
+	# Return to the original directory
+	cd - > /dev/null
+
 	echo "${BOLD}${GREEN}Finished building $2 libraries for $3 platforms${RESET_FORMATTING}"
 }
-
-function package_path() {
-    cd "$PACKAGE_PATH"
-}
-
-# MARK: Formatting
-BOLD="$(tput bold)"
-GREEN="$(tput setaf 2)"
-CYAN="$(tput setaf 6)"
-RED="$(tput setaf 1)"
-RESET_FORMATTING="$(tput sgr0)"
 
 # MARK: Run
 build_libs "$PACKAGE" "$CONFIG" "$PLATFORM"
