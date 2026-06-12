@@ -19,11 +19,13 @@ extension GameCenter {
                         "Error while loading achievement descriptions")
                     return
                 }
+                guard let descriptions = descriptions else {
+                    self.achievementsDescriptionSuccess.emit(TypedArray<GameCenterAchievementDescription?>())
+                    return
+                }
                 GD.printDebug("Loading achievements")
-                var achievementDestriptions = ObjectCollection<
-                    GameCenterAchievementDescription
-                >()
-                for description in descriptions! {
+                var achievementDestriptions = TypedArray<GameCenterAchievementDescription?>()
+                for description in descriptions {
                     achievementDestriptions.append(
                         GameCenterAchievementDescription(description))
                 }

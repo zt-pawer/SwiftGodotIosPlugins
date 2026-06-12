@@ -1,12 +1,4 @@
-//
-//  InAppPurchase.swift
-//  SwiftGodotIosPlugins
-//
-//  Created by ZT Pawer on 12/30/24.
-//
-
 import Foundation
-import StoreKit
 import SwiftGodot
 
 #initSwiftExtension(
@@ -17,7 +9,7 @@ import SwiftGodot
     ]
 )
 
-enum InAppPurchaseError: Int, Error {
+public enum InAppPurchaseError: Int, Error {
     case unknownError = 1
     case notAuthenticated = 2
     case notAvailable = 3
@@ -30,59 +22,43 @@ enum InAppPurchaseError: Int, Error {
 
     var localizedDescription: String {
         switch self {
-        case .unknownError:
-            return "An unknown error occurred."
-        case .notAuthenticated:
-            return "The user is not authenticated."
-        case .notAvailable:
-            return "The feature is not available."
-        case .productNotFound:
-            return "The requested product was not found."
-        case .failedToFetchProducts:
-            return "Failed to fetch the products from the store."
-        case .failedToPurchase:
-            return "An error occurred during the purchase process."
-        case .failedToVerify:
-            return "Failed to verify purchase."
-        case .failedToRestore:
-            return "Failed to restore purchases."
-        case .pending:
-            return "The purchase is pending some user action."
+        case .unknownError: return "An unknown error occurred."
+        case .notAuthenticated: return "The user is not authenticated."
+        case .notAvailable: return "The feature is not available."
+        case .productNotFound: return "The requested product was not found."
+        case .failedToFetchProducts: return "Failed to fetch the products from the store."
+        case .failedToPurchase: return "An error occurred during the purchase process."
+        case .failedToVerify: return "Failed to verify purchase."
+        case .failedToRestore: return "Failed to restore purchases."
+        case .pending: return "The purchase is pending some user action."
         }
     }
 }
 
 @Godot
-class InAppPurchase: Object , ObservableObject {
+class InAppPurchase: Object, ObservableObject {
 
     static var shared: InAppPurchase?
 
-    // Static ISO8601 formatter for performance (creating formatters is expensive)
     private static let iso8601Formatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return formatter
     }()
-    var availableProducts: [InAppPurchaseProduct] = []
+    
     var purchasedProductIDs: Set<String> = []
-    internal var products_cached: [Product] = []
-    internal var allAutoRenewableSubscriptionTransactions = Set<Transaction>()
-
-    // StoreKit's transaction listener
-    private var updateListenerTask: Task<Void, Never>?
+    private var service: InAppPurchaseServiceProtocol
 
     /// @Signal
     /// Success signal during purchase process (backward compatible - emits only productID)
     @Signal var inAppPurchaseSuccess: SignalWithArguments<String>
     /// @Signal
     /// Success signal with full transaction data for server-side validation
-    /// Dictionary contains: product_id (String), transaction_id (String), original_transaction_id (String),
-    /// jws_representation (String), purchase_date (String ISO8601), app_account_token (String or empty)
     @Signal var inAppPurchaseSuccessWithTransaction: SignalWithArguments<GDictionary>
     /// @Signal
     /// Success signal during products fetch process
     @Signal var inAppPurchaseFetchSuccess:
-        SignalWithArguments<ObjectCollection<InAppPurchaseProduct>>
+        SignalWithArguments<TypedArray<InAppPurchaseProduct?>>
     /// @Signal
     /// Error signal during products fetch process
     @Signal var inAppPurchaseFetchError: SignalWithArguments<Int, String>
@@ -104,136 +80,130 @@ class InAppPurchase: Object , ObservableObject {
     /// Error signal during purchase restore process
     @Signal var inAppPurchaseRestoreError: SignalWithArguments<Int, String>
 
-    required override init() {
-        super.init()
-        startTransactionListener()
-        InAppPurchase.shared = self
-    }
-
-    required init(nativeHandle: UnsafeRawPointer) {
-        super.init()
-        startTransactionListener()
+    required init(_ context: InitContext) {
+        let defaultService = InAppPurchaseService()
+        self.service = defaultService
+        super.init(context)
+        
+        setupCallbacks()
         InAppPurchase.shared = self
     }
 
     deinit {
-        stopTransactionListener()
         InAppPurchase.shared = nil
+    }
+    
+    private func setupCallbacks() {
+        service.onTransactionUpdated = { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                self.purchasedProductIDs.insert(data.productID)
+                DispatchQueue.main.async {
+                    self.inAppPurchaseSuccess.emit(data.productID)
+                    let transactionData = self.buildTransactionDictionary(from: data)
+                    self.inAppPurchaseSuccessWithTransaction.emit(transactionData)
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.inAppPurchaseError.emit(InAppPurchaseError.failedToVerify.rawValue, error.localizedDescription)
+                }
+            }
+        }
     }
 
     // MARK: - Synchronous API Exposed to the Caller
 
     /// @Callable
-    ///
-    /// Fetch products from the App Store with listeners (completion handlers)
+    /// Fetch products from the App Store.
     @Callable
     func fetchProducts(_ products: [String]) {
-        fetchProductsAsync(
-            with: products,
-            completion: { error in
-                guard error == nil else {
-                    DispatchQueue.main.async {
-                        self.inAppPurchaseFetchError.emit(
-                            error!.rawValue, error!.localizedDescription)
-                    }
-                    return
-                }
-                var iapProducts = ObjectCollection<InAppPurchaseProduct>()
-                for product in self.products_cached {
-                    iapProducts.append(InAppPurchaseProduct(product: product))
+        service.fetchProducts(identifiers: products) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let list):
+                var iapProducts = TypedArray<InAppPurchaseProduct?>()
+                for prodData in list {
+                    let iapProd = InAppPurchaseProduct()
+                    iapProd.identifier = prodData.identifier
+                    iapProd.displayName = prodData.displayName
+                    iapProd.longDescription = prodData.longDescription
+                    iapProd.displayPrice = prodData.displayPrice
+                    iapProd.price = prodData.price
+                    iapProd.type = prodData.type
+                    iapProducts.append(iapProd)
                 }
                 DispatchQueue.main.async {
                     self.inAppPurchaseFetchSuccess.emit(iapProducts)
                 }
-            })
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.inAppPurchaseFetchError.emit(error.rawValue, error.localizedDescription)
+                }
+            }
+        }
     }
 
     /// @Callable
-    ///
-    /// Synchronously fetches active auto-renewable subscriptions (does not block UI, callback when done)
+    /// Fetches active auto-renewable subscriptions.
     @Callable
     func fetchActiveAutoRenewableSubscriptions() {
-        fetchActiveAutoRenewableSubscriptionsAsync(completion: { products in
+        service.fetchActiveAutoRenewableSubscriptions { [weak self] list in
+            guard let self = self else { return }
             var productsArray = GArray()
-            products.forEach { productsArray.append(Variant($0)) }
+            list.forEach { productsArray.append(Variant($0)) }
             DispatchQueue.main.async {
                 self.inAppPurchaseFetchActiveAutoRenewableSubscriptions.emit(productsArray)
             }
-        })
+        }
     }
 
     /// @Callable
-    ///
-    /// Synchronously fetches all auto-renewable subscription transactions (does not block UI, callback when done)
+    /// Fetches all auto-renewable subscription transaction counts.
     @Callable
     func fetchAutoRenewableTransactionCounts() {
-        fetchAutoRenewableTransactionsAsync(completion: { transactions in
-            
-            // Tally the transaction count for each subscription.
-            self.allAutoRenewableSubscriptionTransactions = self.allAutoRenewableSubscriptionTransactions.union(transactions)
-            var autoRenewableTransactionCounts = [String : Int]()
-            for transaction in self.allAutoRenewableSubscriptionTransactions {
-                let transactionCount = autoRenewableTransactionCounts[transaction.productID] ?? 0
-                autoRenewableTransactionCounts[transaction.productID] = transactionCount + transaction.purchasedQuantity
-            }
-
-            // Convert the dictionary to a GDictionary, and pass it back to Godot via the signal.
+        service.fetchAutoRenewableTransactionCounts { [weak self] counts in
+            guard let self = self else { return }
             var countGDictionary = GDictionary()
-            autoRenewableTransactionCounts.forEach { countGDictionary[Variant($0.key)] = Variant($0.value) }
+            counts.forEach { countGDictionary[Variant($0.key)] = Variant($0.value) }
             DispatchQueue.main.async {
                 self.inAppPurchaseFetchAutoRenewableTransactionCounts.emit(countGDictionary)
             }
-        })
+        }
     }
 
     /// @Callable
-    ///
-    /// Synchronously purchase a product (does not block UI, callback when done)
+    /// Purchase a product.
     @Callable
     func purchaseProduct(_ productID: String) {
-        purchaseProductAsync(
-            productID,
-            completion: { result, error in
-                guard error == nil, let result = result else {
-                    DispatchQueue.main.async {
-                        self.inAppPurchaseError.emit(
-                            error!.rawValue, error!.localizedDescription)
-                    }
-                    return
-                }
+        service.purchaseProduct(productID) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                self.purchasedProductIDs.insert(data.productID)
                 DispatchQueue.main.async {
-                    // Emit backward-compatible signal with just productID
                     self.inAppPurchaseSuccess.emit(productID)
-
-                    // Build transaction data dictionary for server-side validation
-                    let transactionData = self.buildTransactionDictionary(from: result)
+                    let transactionData = self.buildTransactionDictionary(from: data)
                     self.inAppPurchaseSuccessWithTransaction.emit(transactionData)
                 }
-            })
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.inAppPurchaseError.emit(error.rawValue, error.localizedDescription)
+                }
+            }
+        }
     }
 
     /// Builds a GDictionary containing transaction data for server-side validation
-    private func buildTransactionDictionary(from result: TransactionResult) -> GDictionary {
+    private func buildTransactionDictionary(from data: InAppPurchaseTransactionData) -> GDictionary {
         var dict = GDictionary()
-        let transaction = result.transaction
+        dict["product_id"] = Variant(data.productID)
+        dict["transaction_id"] = Variant(data.transactionID)
+        dict["original_transaction_id"] = Variant(data.originalTransactionID)
+        dict["jws_representation"] = Variant(data.jwsRepresentation)
+        dict["purchase_date"] = Variant(Self.iso8601Formatter.string(from: data.purchaseDate))
 
-        // Product identifier
-        dict["product_id"] = Variant(transaction.productID)
-
-        // Transaction ID (UInt64 as String for cross-platform compatibility)
-        dict["transaction_id"] = Variant(String(transaction.id))
-
-        // Original transaction ID (for subscription renewals)
-        dict["original_transaction_id"] = Variant(String(transaction.originalID))
-
-        // JWS representation - cryptographic proof for server validation
-        dict["jws_representation"] = Variant(result.jwsRepresentation)
-
-        // Purchase date in ISO8601 format (using static formatter for performance)
-        dict["purchase_date"] = Variant(Self.iso8601Formatter.string(from: transaction.purchaseDate))
-
-        // App account token (optional UUID set during purchase)
-        if let appAccountToken = transaction.appAccountToken {
+        if let appAccountToken = data.appAccountToken {
             dict["app_account_token"] = Variant(appAccountToken.uuidString)
         } else {
             dict["app_account_token"] = Variant("")
@@ -243,56 +213,23 @@ class InAppPurchase: Object , ObservableObject {
     }
 
     /// @Callable
-    ///
-    /// Synchronously restore purchases (does not block UI, callback when done)
+    /// Restore purchases.
     @Callable
-    func restorePurchases(skipSync noSync:Bool = false) {
-        restorePurchasesAsync(skipSync: noSync, completion: { products, error in
-            guard error == nil else {
+    func restorePurchases(skipSync noSync: Bool = false) {
+        service.restorePurchases(skipSync: noSync) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let list):
+                var productsArray = GArray()
+                list.forEach { productsArray.append(Variant($0)) }
                 DispatchQueue.main.async {
-                    self.inAppPurchaseRestoreError.emit(
-                        error!.rawValue, error!.localizedDescription)
+                    self.inAppPurchaseRestoreSuccess.emit(productsArray)
                 }
-                return
-            }
-            var productsArray = GArray()
-            products.forEach { productsArray.append(Variant($0)) }
-            DispatchQueue.main.async {
-                self.inAppPurchaseRestoreSuccess.emit(productsArray)
-            }
-        })
-    }
-
-    // MARK: - Private Helpers
-    private func startTransactionListener() {
-        updateListenerTask = Task.detached(priority: .background) {
-            for await result in Transaction.updates {
-                switch result {
-                case .verified(let transaction):
-                    await self.handleTransaction(transaction)
-                    
-                    // Store any auto-renewable subscription transactions.
-                    if .autoRenewable == transaction.productType
-                        && transaction.revocationDate == nil
-                        && transaction.isUpgraded == false {
-                            self.allAutoRenewableSubscriptionTransactions.insert(transaction)
-                    }
-                case .unverified(_, let error):
-                    GD.printErr("Unverified transaction: \(error)")
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    self.inAppPurchaseRestoreError.emit(error.rawValue, error.localizedDescription)
                 }
             }
-        }
-    }
-
-    private func stopTransactionListener() {
-        updateListenerTask?.cancel()
-    }
-
-    @MainActor
-    internal func handleTransaction(_ transaction: Transaction) {
-        self.purchasedProductIDs.insert(transaction.productID)
-        Task {
-            await transaction.finish()
         }
     }
 }

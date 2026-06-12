@@ -1,5 +1,4 @@
 import Foundation
-import FirebaseAuth
 import SwiftGodot
 
 @Godot
@@ -20,20 +19,20 @@ class GodotFirebaseAuth: RefCounted {
     /// Emitted when sign out fails, passing the error description.
     @Signal var signOutFailed: SignalWithArguments<String>
 
+    private let service = FirebaseAuthService()
+
     /// @Callable
     /// Signs in the user anonymously.
     @Callable
     func signInAnonymously() {
-        Auth.auth().signInAnonymously { authResult, error in
+        service.signInAnonymously { [weak self] result in
             DispatchQueue.main.async {
-                if let error = error {
+                guard let self = self else { return }
+                switch result {
+                case .success(let uid):
+                    self.signInSuccess.emit(uid)
+                case .failure(let error):
                     self.signInFailed.emit(error.localizedDescription)
-                    return
-                }
-                if let user = authResult?.user {
-                    self.signInSuccess.emit(user.uid)
-                } else {
-                    self.signInFailed.emit("Unknown authentication error.")
                 }
             }
         }
@@ -43,14 +42,14 @@ class GodotFirebaseAuth: RefCounted {
     /// Signs out the currently signed-in user.
     @Callable
     func signOut() {
-        do {
-            try Auth.auth().signOut()
+        service.signOut { [weak self] error in
             DispatchQueue.main.async {
-                self.signOutSuccess.emit()
-            }
-        } catch let error {
-            DispatchQueue.main.async {
-                self.signOutFailed.emit(error.localizedDescription)
+                guard let self = self else { return }
+                if let error = error {
+                    self.signOutFailed.emit(error.localizedDescription)
+                } else {
+                    self.signOutSuccess.emit()
+                }
             }
         }
     }
@@ -59,13 +58,13 @@ class GodotFirebaseAuth: RefCounted {
     /// Returns true if a user is currently signed in.
     @Callable
     func isUserSignedIn() -> Bool {
-        return Auth.auth().currentUser != nil
+        return service.isUserSignedIn()
     }
 
     /// @Callable
     /// Returns the current user's UID or an empty string if not signed in.
     @Callable
     func getCurrentUserUid() -> String {
-        return Auth.auth().currentUser?.uid ?? ""
+        return service.getCurrentUserUid()
     }
 }

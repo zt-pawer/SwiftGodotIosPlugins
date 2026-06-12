@@ -43,6 +43,39 @@ Register the signals as indicated for each plugin and implement the methods that
 - [InAppPurchase](InAppPurchase/README.md)
 - [GodotFirebase](GodotFirebase/README.md)
 
+# Architecture & Unit Testing
+
+All plugins in this repository are designed with a **decoupled service architecture**. We separate the Godot engine bindings (`@Godot` wrappers) from the core business logic (pure Swift services):
+
+```
++-----------------------------------+
+|      Godot Engine (Runtime)       |
++-----------------+-----------------+
+                  |
+                  v (Signals / @Callable)
++-----------------+-----------------+
+|   @Godot Wrapper Class (ICloud)   |
++-----------------+-----------------+
+                  |
+                  v (Delegates / Native Swift Types)
++-----------------+-----------------+
+|  Pure Swift Service (ICloudService) |
++-----------------+-----------------+
+                  |
+                  v
+       Apple Core SDKs / API
+```
+
+### Why this design?
+SwiftGodot relies on a global GDExtension function pointer table (`gi`). Outside of a running Godot engine process, any call to instantiate a `@Godot` subclass or use Godot types (like `Variant`) crashes. By separating the logic into pure Swift services that deal only with native Swift types, we can:
+1. Run local unit tests headlessly via `swift test` without crashing.
+2. Mock Apple SDKs and live network environments during testing.
+3. Test your game manager and UI logic in your game codebase by using mock interfaces.
+
+### Mocking in Game Code
+Every service implements a corresponding Protocol interface (e.g. `FirebaseAuthServiceProtocol`, `ICloudServiceProtocol`, etc.). Instead of hardcoding concrete services, your game client can depend on these protocols, allowing you to inject mock objects during game simulations or tests.
+
+
 # Contributing
 
 Have a bug fix or feature request you'd like to see added? Consider contributing! See the issue list for help requests.

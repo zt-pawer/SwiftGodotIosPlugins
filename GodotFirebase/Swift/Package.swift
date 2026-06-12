@@ -20,7 +20,7 @@ let package = Package(
             targets: ["GodotFirebase"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftGodot", revision: "b8809f5a0568339c76e5965224e72ef91045d739"),
+        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main"),
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.25.0")
     ],
     targets: [
@@ -32,6 +32,10 @@ let package = Package(
                 .product(name: "FirebaseAppCheck", package: "firebase-ios-sdk"),
             ],
             swiftSettings: [.unsafeFlags(["-suppress-warnings"])]
+        ),
+        .testTarget(
+            name: "GodotFirebaseTests",
+            dependencies: ["GodotFirebase"]
         ),
     ]
 )

@@ -1,11 +1,4 @@
-//
-//  ICloudViewController.swift
-//  SwiftGodotIosPlugins
-//
-//  Created by ZT Pawer on 12/30/24.
-//
-
-import GameKit
+import Foundation
 import SwiftGodot
 
 #initSwiftExtension(
@@ -36,60 +29,31 @@ class ICloud: Object {
     @Signal var notificationChange: SignalWithArguments<Int, GArray>
 
     static var shared: ICloud?
-    private let iCloudStore = NSUbiquitousKeyValueStore.default
-    private var notificationObserver: NSObjectProtocol?
-    private var autoSyncEnabled: Bool = false
+    private var service: ICloudServiceProtocol
+    
     var autoSync: Bool {
-        get { autoSyncEnabled }
-        set { autoSyncEnabled = newValue }
+        get { service.autoSync }
+        set { service.autoSync = newValue }
     }
 
-    required init() {
-        super.init()
-        notificationSetup()
+    required init(_ context: InitContext) {
+        let defaultService = ICloudService()
+        self.service = defaultService
+        super.init(context)
+        
+        setupCallbacks()
         ICloud.shared = self
     }
-
-    required init(nativeHandle: UnsafeRawPointer) {
-        super.init()
-        notificationSetup()
-        ICloud.shared = self
-    }
-
-    private func notificationSetup() {
-        // Observe changes using a closure
-        notificationObserver = NotificationCenter.default.addObserver(
-            forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
-            object: iCloudStore,
-            queue: .main
-        ) { [weak self] notification in
-            self?.handleiCloudStoreDidChange(notification: notification)
+    
+    private func setupCallbacks() {
+        service.onStoreDidChange = { [weak self] changeReason, changedKeys in
+            guard let self = self else { return }
+            var array = GArray()
+            for key in changedKeys {
+                array.append(Variant(key))
+            }
+            self.notificationChange.emit(changeReason, array)
         }
-    }
-
-    deinit {
-        // Clean up the observer
-        if let observer = notificationObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
-    }
-
-    /// Handle iCloud changes
-    /// Note: It has not been tested
-    private func handleiCloudStoreDidChange(notification: Notification) {
-        guard let userInfo = notification.userInfo else { return }
-
-        let changeReason =
-            userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int ?? -1
-        let changedKeys =
-            userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] ?? []
-
-        var array = GArray()
-        for key in changedKeys {
-            array.append(Variant(key))
-        }
-        notificationChange.emit(changeReason, array)
-
     }
 
     /// @Callable
@@ -97,7 +61,7 @@ class ICloud: Object {
     /// Synchronize
     @Callable
     func synchronize() -> Bool {
-        return iCloudStore.synchronize()
+        return service.synchronize()
     }
 
     /// @Callable
@@ -105,13 +69,11 @@ class ICloud: Object {
     /// Write a Godot variant equivalent value to iCloud
     @Callable
     func setValue(_ aValue: Variant, forKey key: String) {
-        var value = variantToAny(aValue)
-        if value == nil {
+        guard let value = variantToAny(aValue) else {
             icloudSetFail.emit(ICloudError.valueError.rawValue, "Value not supported \(aValue)")
             return
         }
-        iCloudStore.set(variantToAny(aValue), forKey: key)
-        if autoSync { iCloudStore.synchronize() }
+        service.setValue(value, forKey: key)
     }
 
     /// @Callable
@@ -119,12 +81,17 @@ class ICloud: Object {
     /// Read a Godot variant equivalent value from iCloud
     @Callable
     func getValue(forKey key: String) -> Variant? {
-        var value = anyToVariant(iCloudStore.object(forKey: key))
-        if value == nil {
+        guard let swiftVal = service.getValue(forKey: key) else {
             icloudGetFail.emit(ICloudError.valueError.rawValue, "Value not available for \(key)")
             return nil
         }
-        return value
+        
+        guard let variantVal = anyToVariant(swiftVal) else {
+            icloudGetFail.emit(ICloudError.valueError.rawValue, "Value not convertible for \(key)")
+            return nil
+        }
+        
+        return variantVal
     }
 
     private func variantToAny(_ value: Variant) -> Any? {
@@ -156,5 +123,4 @@ class ICloud: Object {
             return nil
         }
     }
-
 }

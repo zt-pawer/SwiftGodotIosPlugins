@@ -13,7 +13,7 @@ let package = Package(
             targets: ["InAppPurchase"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "7e4c34ccbc149cd61de3c8fa76a09f84bf5583f5")
+        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main")
     ],
     targets: [
         .target(
@@ -22,6 +22,10 @@ let package = Package(
                 "SwiftGodot",
             ],
             swiftSettings: [.unsafeFlags(["-suppress-warnings"])]
+        ),
+        .testTarget(
+            name: "InAppPurchaseTests",
+            dependencies: ["InAppPurchase"]
         ),
     ]
 )

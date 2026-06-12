@@ -20,7 +20,7 @@ let package = Package(
             targets: ["GameCenter"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "727a0bbe44d9fa4b4f6d38e78ba12e5b395bba4e")
+        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main")
     ],
     targets: [
         .target(
@@ -29,6 +29,10 @@ let package = Package(
                 "SwiftGodot",
             ],
             swiftSettings: [.unsafeFlags(["-suppress-warnings"])]
+        ),
+        .testTarget(
+            name: "GameCenterTests",
+            dependencies: ["GameCenter"]
         ),
     ]
 )
