@@ -1,0 +1,16 @@
+[configuration]
+entry_symbol = "applesignin"
+compatibility_minimum = 4.2
+reloadable = true
+
+[libraries]
+macos.debug = "res://addons/iosplugins/macos/libAppleSignIn.dylib"
+macos.release = "res://addons/iosplugins/macos/libAppleSignIn.dylib"
+ios.debug = "res://addons/iosplugins/ios/AppleSignIn.framework"
+ios.release = "res://addons/iosplugins/ios/AppleSignIn.framework"
+
+[dependencies]
+macos.debug = {"res://addons/iosplugins/macos/libSwiftGodot.dylib" : ""}
+macos.release = {"res://addons/iosplugins/macos/libSwiftGodot.dylib" : ""}
+ios.debug = {"res://addons/iosplugins/ios/SwiftGodot.framework" : ""}
+ios.release = {"res://addons/iosplugins/ios/SwiftGodot.framework" : ""}
