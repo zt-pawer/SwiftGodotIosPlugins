@@ -1,0 +1,171 @@
+[gd_scene load_steps=2 format=3 uid="uid://cvr7dp01tagun"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_6te8g"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6te8g")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -450.0
+offset_right = 250.0
+offset_bottom = 450.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "AdMob Plugin Test App"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "AdMob Status: Ready"
+horizontal_alignment = 1
+
+[node name="HSeparatorConsent" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ConsentLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "UMP Consent Management"
+horizontal_alignment = 1
+
+[node name="ConsentStatus" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Consent Status: Unknown"
+horizontal_alignment = 1
+
+[node name="HBoxConsent" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="RequestConsent" type="Button" parent="VBoxContainer/HBoxConsent"]
+layout_mode = 2
+text = "Request Consent Info"
+
+[node name="ShowConsentForm" type="Button" parent="VBoxContainer/HBoxConsent"]
+layout_mode = 2
+text = "Show Consent Form"
+
+[node name="ResetConsent" type="Button" parent="VBoxContainer/HBoxConsent"]
+layout_mode = 2
+text = "Reset Consent"
+
+[node name="HSeparator1" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="BannerLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Banner Ads"
+horizontal_alignment = 1
+
+[node name="BannerStatus" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Banner: Idle"
+horizontal_alignment = 1
+
+[node name="HBoxBanner" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="LoadBanner" type="Button" parent="VBoxContainer/HBoxBanner"]
+layout_mode = 2
+text = "Load Banner"
+
+[node name="ShowBanner" type="Button" parent="VBoxContainer/HBoxBanner"]
+layout_mode = 2
+text = "Show Banner"
+
+[node name="HideBanner" type="Button" parent="VBoxContainer/HBoxBanner"]
+layout_mode = 2
+text = "Hide Banner"
+
+[node name="DestroyBanner" type="Button" parent="VBoxContainer/HBoxBanner"]
+layout_mode = 2
+text = "Destroy Banner"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="InterstitialLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Interstitial Ads"
+horizontal_alignment = 1
+
+[node name="InterstitialStatus" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Interstitial: Idle"
+horizontal_alignment = 1
+
+[node name="HBoxInterstitial" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="LoadInterstitial" type="Button" parent="VBoxContainer/HBoxInterstitial"]
+layout_mode = 2
+text = "Load Interstitial"
+
+[node name="ShowInterstitial" type="Button" parent="VBoxContainer/HBoxInterstitial"]
+layout_mode = 2
+text = "Show Interstitial"
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="RewardedLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Rewarded Ads"
+horizontal_alignment = 1
+
+[node name="RewardedStatus" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Rewarded: Idle"
+horizontal_alignment = 1
+
+[node name="HBoxRewarded" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 10
+
+[node name="LoadRewarded" type="Button" parent="VBoxContainer/HBoxRewarded"]
+layout_mode = 2
+text = "Load Rewarded"
+
+[node name="ShowRewarded" type="Button" parent="VBoxContainer/HBoxRewarded"]
+layout_mode = 2
+text = "Show Rewarded"
+
+[connection signal="pressed" from="VBoxContainer/HBoxConsent/RequestConsent" to="." method="_on_request_consent_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxConsent/ShowConsentForm" to="." method="_on_show_consent_form_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxConsent/ResetConsent" to="." method="_on_reset_consent_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxBanner/LoadBanner" to="." method="_on_load_banner_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxBanner/ShowBanner" to="." method="_on_show_banner_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxBanner/HideBanner" to="." method="_on_hide_banner_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxBanner/DestroyBanner" to="." method="_on_destroy_banner_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxInterstitial/LoadInterstitial" to="." method="_on_load_interstitial_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxInterstitial/ShowInterstitial" to="." method="_on_show_interstitial_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxRewarded/LoadRewarded" to="." method="_on_load_rewarded_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxRewarded/ShowRewarded" to="." method="_on_show_rewarded_pressed"]

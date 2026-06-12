@@ -129,7 +129,7 @@ build_libs() {
 
 	if [[ ${#COPY_COMMANDS[@]} -gt 0 ]]; then
 		echo "${BOLD}${CYAN}Copying binaries...${RESET_FORMATTING}"
-		for instruction in ${COPY_COMMANDS[@]}
+		for instruction in "${COPY_COMMANDS[@]}"
 		do
 			target=${instruction##* }
 			if ! [[ -e "$target" ]]; then

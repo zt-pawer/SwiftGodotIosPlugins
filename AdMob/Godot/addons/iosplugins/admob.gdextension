@@ -1,0 +1,16 @@
+[configuration]
+entry_symbol = "admob"
+compatibility_minimum = 4.2
+reloadable = true
+
+[libraries]
+macos.debug = "res://addons/iosplugins/macos/libAdMob.dylib"
+macos.release = "res://addons/iosplugins/macos/libAdMob.dylib"
+ios.debug = "res://addons/iosplugins/ios/AdMob.framework"
+ios.release = "res://addons/iosplugins/ios/AdMob.framework"
+
+[dependencies]
+macos.debug = {"res://addons/iosplugins/macos/libSwiftGodot.dylib" : ""}
+macos.release = {"res://addons/iosplugins/macos/libSwiftGodot.dylib" : ""}
+ios.debug = {"res://addons/iosplugins/ios/SwiftGodot.framework" : ""}
+ios.release = {"res://addons/iosplugins/ios/SwiftGodot.framework" : ""}

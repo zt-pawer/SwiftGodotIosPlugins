@@ -19,7 +19,7 @@ There are few major benefits with this version of the plugins compared to the cl
 
 # Supported Plugins
 
-Currently, SwiftGodotIosPlugins implements the iOS **GameCenter**, **ICloud**, **InAppPurchase**, and **GodotFirebase** (Firebase Core, Anonymous Auth, App Check) integration.
+Currently, SwiftGodotIosPlugins implements the iOS **AdMob**, **AppleSignIn**, **GameCenter**, **GodotFirebase** (Firebase Core, Anonymous Auth, App Check), **ICloud**, and **InAppPurchase** integrations.
 
 Other iOS integrations (camera, arkit, apn, photo_picker) are under consideration.
 
@@ -38,10 +38,12 @@ Register the signals as indicated for each plugin and implement the methods that
 [YouTube tutorial](https://www.youtube.com/watch?v=RcisM4x9cTo)
 
 # Technical details
+- [AdMob](AdMob/README.md)
+- [AppleSignIn](AppleSignIn/README.md)
 - [GameCenter](GameCenter/README.md)
+- [GodotFirebase](GodotFirebase/README.md)
 - [ICloud](ICloud/README.md)
 - [InAppPurchase](InAppPurchase/README.md)
-- [GodotFirebase](GodotFirebase/README.md)
 
 # Architecture & Unit Testing
 
