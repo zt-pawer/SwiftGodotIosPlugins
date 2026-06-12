@@ -61,16 +61,27 @@ func _on_app_check_token_failed(error_message: String) -> void:
 ## 2. Firebase Auth (`GodotFirebaseAuth`)
 
 ### Signals
-- `signInSuccess(uid: String)` - Emitted when anonymous sign-in succeeds.
+- `signInSuccess(uid: String)` - Emitted when sign-in succeeds (applies to both anonymous and federated sign-ins).
 - `signInFailed(error_message: String)` - Emitted when sign-in fails.
 - `signOutSuccess()` - Emitted when signing out succeeds.
 - `signOutFailed(error_message: String)` - Emitted when signing out fails.
+- `linkSuccess(uid: String)` - Emitted when a platform account is successfully linked/merged.
+- `linkFailed(error_message: String)` - Emitted when account linking fails.
 
 ### Methods
 - `signInAnonymously()` - Initiates anonymous user authentication.
 - `signOut()` - Signs out the currently active user.
 - `isUserSignedIn()` -> `Bool` - Returns `true` if a user is currently logged in.
 - `getCurrentUserUid()` -> `String` - Returns the current user's UID or an empty string if not authenticated.
+- `signInWithApple(idToken: String, rawNonce: String)` - Signs in using Apple credentials.
+- `linkWithApple(idToken: String, rawNonce: String)` - Links Apple credentials to the active user profile.
+- `signInWithGoogle(idToken: String, accessToken: String)` - Signs in using Google credentials.
+- `linkWithGoogle(idToken: String, accessToken: String)` - Links Google credentials to the active user profile.
+- `signInWithFacebook(accessToken: String)` - Signs in using Facebook credentials.
+- `linkWithFacebook(accessToken: String)` - Links Facebook credentials to the active user profile.
+- `signInWithGameCenter()` - Signs in using Game Center credentials (auto-retrieved from local player session).
+- `linkWithGameCenter()` - Links Game Center credentials to the active user profile.
+
 
 ---
 
