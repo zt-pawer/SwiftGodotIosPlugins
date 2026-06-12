@@ -1,11 +1,24 @@
 import XCTest
 @testable import GodotFirebase
 
-// 1. Mock implementation of the FirebaseAuthProvider (Option A Mock)
+// Mock implementation of the FirebaseAuthProvider
 class MockFirebaseAuthProvider: FirebaseAuthProvider {
     var mockUid: String? = nil
     var mockError: Error? = nil
     var signOutCalled = false
+    
+    var lastAppleIdToken: String?
+    var lastAppleNonce: String?
+    var lastGoogleIdToken: String?
+    var lastGoogleAccessToken: String?
+    var lastFacebookAccessToken: String?
+    
+    var linkAppleCalled = false
+    var linkGoogleCalled = false
+    var linkFacebookCalled = false
+    
+    var signInGameCenterCalled = false
+    var linkGameCenterCalled = false
     
     var currentUserUid: String? {
         return mockUid
@@ -22,6 +35,53 @@ class MockFirebaseAuthProvider: FirebaseAuthProvider {
         }
         mockUid = nil
     }
+    
+    func signInWithApple(idToken: String, rawNonce: String, completion: @escaping (String?, Error?) -> Void) {
+        lastAppleIdToken = idToken
+        lastAppleNonce = rawNonce
+        completion(mockUid, mockError)
+    }
+    
+    func linkWithApple(idToken: String, rawNonce: String, completion: @escaping (String?, Error?) -> Void) {
+        linkAppleCalled = true
+        lastAppleIdToken = idToken
+        lastAppleNonce = rawNonce
+        completion(mockUid, mockError)
+    }
+    
+    func signInWithGoogle(idToken: String, accessToken: String, completion: @escaping (String?, Error?) -> Void) {
+        lastGoogleIdToken = idToken
+        lastGoogleAccessToken = accessToken
+        completion(mockUid, mockError)
+    }
+    
+    func linkWithGoogle(idToken: String, accessToken: String, completion: @escaping (String?, Error?) -> Void) {
+        linkGoogleCalled = true
+        lastGoogleIdToken = idToken
+        lastGoogleAccessToken = accessToken
+        completion(mockUid, mockError)
+    }
+    
+    func signInWithFacebook(accessToken: String, completion: @escaping (String?, Error?) -> Void) {
+        lastFacebookAccessToken = accessToken
+        completion(mockUid, mockError)
+    }
+    
+    func linkWithFacebook(accessToken: String, completion: @escaping (String?, Error?) -> Void) {
+        linkFacebookCalled = true
+        lastFacebookAccessToken = accessToken
+        completion(mockUid, mockError)
+    }
+    
+    func signInWithGameCenter(completion: @escaping (String?, Error?) -> Void) {
+        signInGameCenterCalled = true
+        completion(mockUid, mockError)
+    }
+    
+    func linkWithGameCenter(completion: @escaping (String?, Error?) -> Void) {
+        linkGameCenterCalled = true
+        completion(mockUid, mockError)
+    }
 }
 
 final class GodotFirebaseTests: XCTestCase {
@@ -37,16 +97,13 @@ final class GodotFirebaseTests: XCTestCase {
     }
     
     func testFirebaseAuthServiceSignInSuccess() {
-        // Arrange
         let mockProvider = MockFirebaseAuthProvider()
         mockProvider.mockUid = "happy_player_999"
         let authService = FirebaseAuthService(authProvider: mockProvider)
         
         let expectation = self.expectation(description: "Sign in success expectation")
         
-        // Act
         authService.signInAnonymously { result in
-            // Assert
             switch result {
             case .success(let uid):
                 XCTAssertEqual(uid, "happy_player_999")
@@ -62,7 +119,6 @@ final class GodotFirebaseTests: XCTestCase {
     }
     
     func testFirebaseAuthServiceSignInFailure() {
-        // Arrange
         let mockProvider = MockFirebaseAuthProvider()
         let expectedError = NSError(domain: "test", code: 42, userInfo: [NSLocalizedDescriptionKey: "Network failure"])
         mockProvider.mockError = expectedError
@@ -70,9 +126,7 @@ final class GodotFirebaseTests: XCTestCase {
         
         let expectation = self.expectation(description: "Sign in failure expectation")
         
-        // Act
         authService.signInAnonymously { result in
-            // Assert
             switch result {
             case .success:
                 XCTFail("Should not succeed on error")
@@ -87,7 +141,6 @@ final class GodotFirebaseTests: XCTestCase {
     }
     
     func testFirebaseAuthServiceSignOut() {
-        // Arrange
         let mockProvider = MockFirebaseAuthProvider()
         mockProvider.mockUid = "active_user"
         let authService = FirebaseAuthService(authProvider: mockProvider)
@@ -95,7 +148,6 @@ final class GodotFirebaseTests: XCTestCase {
         
         let expectation = self.expectation(description: "Sign out expectation")
         
-        // Act
         authService.signOut { error in
             XCTAssertNil(error)
             expectation.fulfill()
@@ -104,5 +156,121 @@ final class GodotFirebaseTests: XCTestCase {
         waitForExpectations(timeout: 1.0)
         XCTAssertTrue(mockProvider.signOutCalled)
         XCTAssertFalse(authService.isUserSignedIn())
+    }
+    
+    func testFirebaseAuthServiceAppleSignInAndLink() {
+        let mockProvider = MockFirebaseAuthProvider()
+        mockProvider.mockUid = "apple_user"
+        let authService = FirebaseAuthService(authProvider: mockProvider)
+        
+        let expectation1 = self.expectation(description: "Apple sign in success")
+        authService.signInWithApple(idToken: "token123", rawNonce: "nonce456") { result in
+            if case .success(let uid) = result {
+                XCTAssertEqual(uid, "apple_user")
+            } else {
+                XCTFail("Sign in with Apple failed")
+            }
+            expectation1.fulfill()
+        }
+        
+        XCTAssertEqual(mockProvider.lastAppleIdToken, "token123")
+        XCTAssertEqual(mockProvider.lastAppleNonce, "nonce456")
+        
+        let expectation2 = self.expectation(description: "Apple link success")
+        authService.linkWithApple(idToken: "token789", rawNonce: "nonce000") { result in
+            XCTAssertTrue(mockProvider.linkAppleCalled)
+            expectation2.fulfill()
+        }
+        
+        XCTAssertEqual(mockProvider.lastAppleIdToken, "token789")
+        XCTAssertEqual(mockProvider.lastAppleNonce, "nonce000")
+        
+        waitForExpectations(timeout: 1.0)
+    }
+    
+    func testFirebaseAuthServiceGoogleSignInAndLink() {
+        let mockProvider = MockFirebaseAuthProvider()
+        mockProvider.mockUid = "google_user"
+        let authService = FirebaseAuthService(authProvider: mockProvider)
+        
+        let expectation1 = self.expectation(description: "Google sign in success")
+        authService.signInWithGoogle(idToken: "g_id", accessToken: "g_access") { result in
+            if case .success(let uid) = result {
+                XCTAssertEqual(uid, "google_user")
+            } else {
+                XCTFail()
+            }
+            expectation1.fulfill()
+        }
+        
+        XCTAssertEqual(mockProvider.lastGoogleIdToken, "g_id")
+        XCTAssertEqual(mockProvider.lastGoogleAccessToken, "g_access")
+        
+        let expectation2 = self.expectation(description: "Google link success")
+        authService.linkWithGoogle(idToken: "g_id_link", accessToken: "g_access_link") { result in
+            XCTAssertTrue(mockProvider.linkGoogleCalled)
+            expectation2.fulfill()
+        }
+        
+        XCTAssertEqual(mockProvider.lastGoogleIdToken, "g_id_link")
+        XCTAssertEqual(mockProvider.lastGoogleAccessToken, "g_access_link")
+        
+        waitForExpectations(timeout: 1.0)
+    }
+    
+    func testFirebaseAuthServiceFacebookSignInAndLink() {
+        let mockProvider = MockFirebaseAuthProvider()
+        mockProvider.mockUid = "fb_user"
+        let authService = FirebaseAuthService(authProvider: mockProvider)
+        
+        let expectation1 = self.expectation(description: "Facebook sign in success")
+        authService.signInWithFacebook(accessToken: "fb_access") { result in
+            if case .success(let uid) = result {
+                XCTAssertEqual(uid, "fb_user")
+            } else {
+                XCTFail()
+            }
+            expectation1.fulfill()
+        }
+        
+        XCTAssertEqual(mockProvider.lastFacebookAccessToken, "fb_access")
+        
+        let expectation2 = self.expectation(description: "Facebook link success")
+        authService.linkWithFacebook(accessToken: "fb_access_link") { result in
+            XCTAssertTrue(mockProvider.linkFacebookCalled)
+            expectation2.fulfill()
+        }
+        
+        XCTAssertEqual(mockProvider.lastFacebookAccessToken, "fb_access_link")
+        
+        waitForExpectations(timeout: 1.0)
+    }
+    
+    func testFirebaseAuthServiceGameCenterSignInAndLink() {
+        let mockProvider = MockFirebaseAuthProvider()
+        mockProvider.mockUid = "gc_user"
+        let authService = FirebaseAuthService(authProvider: mockProvider)
+        
+        let expectation1 = self.expectation(description: "Game Center sign in success")
+        authService.signInWithGameCenter { result in
+            if case .success(let uid) = result {
+                XCTAssertEqual(uid, "gc_user")
+            } else {
+                XCTFail()
+            }
+            expectation1.fulfill()
+        }
+        
+        XCTAssertTrue(mockProvider.signInGameCenterCalled)
+        
+        let expectation2 = self.expectation(description: "Game Center link success")
+        authService.linkWithGameCenter { result in
+            XCTAssertTrue(mockProvider.linkGameCenterCalled)
+            expectation2.fulfill()
+        }
+        
+        XCTAssertTrue(mockProvider.linkGameCenterCalled)
+        
+        waitForExpectations(timeout: 1.0)
     }
 }
