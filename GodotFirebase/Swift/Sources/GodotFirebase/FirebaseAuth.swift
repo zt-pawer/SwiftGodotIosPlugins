@@ -27,6 +27,22 @@ class GodotFirebaseAuth: RefCounted {
     /// Emitted when linking a platform account fails.
     @Signal var linkFailed: SignalWithArguments<String>
 
+    /// @Signal
+    /// Emitted on successful custom token sign-in, passing the user's UID.
+    @Signal var customTokenSignInSuccess: SignalWithArguments<String>
+
+    /// @Signal
+    /// Emitted when custom token sign-in fails, passing the error description.
+    @Signal var customTokenSignInFailed: SignalWithArguments<String>
+
+    /// @Signal
+    /// Emitted on successful ID token retrieval, passing the token string.
+    @Signal var idTokenSuccess: SignalWithArguments<String>
+
+    /// @Signal
+    /// Emitted when ID token retrieval fails, passing the error description.
+    @Signal var idTokenFailed: SignalWithArguments<String>
+
     private let service = FirebaseAuthService()
 
     /// @Callable
@@ -207,6 +223,40 @@ class GodotFirebaseAuth: RefCounted {
                     self.linkSuccess.emit(uid)
                 case .failure(let error):
                     self.linkFailed.emit(error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    /// @Callable
+    /// Signs in with a Firebase custom token issued by the backend.
+    @Callable
+    func signInWithCustomToken(customToken: String) {
+        service.signInWithCustomToken(customToken) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch result {
+                case .success(let uid):
+                    self.customTokenSignInSuccess.emit(uid)
+                case .failure(let error):
+                    self.customTokenSignInFailed.emit(error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    /// @Callable
+    /// Retrieves the Firebase ID token for the current user. Pass forceRefresh: true to bypass cache.
+    @Callable
+    func getIdToken(forceRefresh: Bool) {
+        service.getIdToken(forceRefresh: forceRefresh) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch result {
+                case .success(let token):
+                    self.idTokenSuccess.emit(token)
+                case .failure(let error):
+                    self.idTokenFailed.emit(error.localizedDescription)
                 }
             }
         }

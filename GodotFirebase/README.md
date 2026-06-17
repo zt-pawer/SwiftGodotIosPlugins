@@ -67,6 +67,10 @@ func _on_app_check_token_failed(error_message: String) -> void:
 - `signOutFailed(error_message: String)` - Emitted when signing out fails.
 - `linkSuccess(uid: String)` - Emitted when a platform account is successfully linked/merged.
 - `linkFailed(error_message: String)` - Emitted when account linking fails.
+- `customTokenSignInSuccess(uid: String)` - Emitted when custom token sign-in succeeds, passing the user's UID.
+- `customTokenSignInFailed(error_message: String)` - Emitted when custom token sign-in fails.
+- `idTokenSuccess(token: String)` - Emitted when the Firebase ID token is successfully retrieved.
+- `idTokenFailed(error_message: String)` - Emitted when ID token retrieval fails.
 
 ### Methods
 - `signInAnonymously()` - Initiates anonymous user authentication.
@@ -81,6 +85,8 @@ func _on_app_check_token_failed(error_message: String) -> void:
 - `linkWithFacebook(accessToken: String)` - Links Facebook credentials to the active user profile.
 - `signInWithGameCenter()` - Signs in using Game Center credentials (auto-retrieved from local player session).
 - `linkWithGameCenter()` - Links Game Center credentials to the active user profile.
+- `signInWithCustomToken(customToken: String)` - Signs in using a Firebase custom token issued by your backend. Emits `customTokenSignInSuccess` or `customTokenSignInFailed`.
+- `getIdToken(forceRefresh: Bool)` - Retrieves the Firebase ID token for the current user. Pass `true` to bypass the cache. Emits `idTokenSuccess` or `idTokenFailed`.
 
 
 ---

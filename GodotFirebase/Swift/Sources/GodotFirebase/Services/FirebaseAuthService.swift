@@ -19,6 +19,9 @@ public protocol FirebaseAuthProvider {
     
     func signInWithGameCenter(completion: @escaping (String?, Error?) -> Void)
     func linkWithGameCenter(completion: @escaping (String?, Error?) -> Void)
+
+    func signInWithCustomToken(_ token: String, completion: @escaping (String?, Error?) -> Void)
+    func getIdToken(forceRefresh: Bool, completion: @escaping (String?, Error?) -> Void)
 }
 
 // 2. Default provider that accesses Firebase Auth dynamically to prevent initialization exceptions in tests
@@ -170,6 +173,30 @@ public struct DefaultFirebaseAuthProvider: FirebaseAuthProvider {
         }
     }
     
+    public func signInWithCustomToken(_ token: String, completion: @escaping (String?, Error?) -> Void) {
+        guard FirebaseApp.app() != nil else {
+            completion(nil, firebaseNotConfiguredError())
+            return
+        }
+        Auth.auth().signIn(withCustomToken: token) { result, error in
+            completion(result?.user.uid, error)
+        }
+    }
+
+    public func getIdToken(forceRefresh: Bool, completion: @escaping (String?, Error?) -> Void) {
+        guard FirebaseApp.app() != nil else {
+            completion(nil, firebaseNotConfiguredError())
+            return
+        }
+        guard let user = Auth.auth().currentUser else {
+            completion(nil, noUserSignedInError())
+            return
+        }
+        user.getIDTokenForcingRefresh(forceRefresh) { token, error in
+            completion(token, error)
+        }
+    }
+
     private func firebaseNotConfiguredError() -> Error {
         return NSError(domain: "FirebaseAuthService", code: -2, userInfo: [NSLocalizedDescriptionKey: "Firebase has not been configured."])
     }
@@ -197,6 +224,9 @@ public protocol FirebaseAuthServiceProtocol {
     
     func signInWithGameCenter(completion: @escaping (Result<String, Error>) -> Void)
     func linkWithGameCenter(completion: @escaping (Result<String, Error>) -> Void)
+
+    func signInWithCustomToken(_ token: String, completion: @escaping (Result<String, Error>) -> Void)
+    func getIdToken(forceRefresh: Bool, completion: @escaping (Result<String, Error>) -> Void)
 }
 
 public final class FirebaseAuthService: FirebaseAuthServiceProtocol {
@@ -276,7 +306,19 @@ public final class FirebaseAuthService: FirebaseAuthServiceProtocol {
             self.handleCompletion(uid: uid, error: error, completion: completion)
         }
     }
-    
+
+    public func signInWithCustomToken(_ token: String, completion: @escaping (Result<String, Error>) -> Void) {
+        authProvider.signInWithCustomToken(token) { uid, error in
+            self.handleCompletion(uid: uid, error: error, completion: completion)
+        }
+    }
+
+    public func getIdToken(forceRefresh: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+        authProvider.getIdToken(forceRefresh: forceRefresh) { token, error in
+            self.handleCompletion(uid: token, error: error, completion: completion)
+        }
+    }
+
     private func handleCompletion(uid: String?, error: Error?, completion: @escaping (Result<String, Error>) -> Void) {
         if let error = error {
             completion(.failure(error))
