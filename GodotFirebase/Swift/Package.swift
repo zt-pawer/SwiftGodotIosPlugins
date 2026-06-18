@@ -20,7 +20,7 @@ let package = Package(
             targets: ["GodotFirebase"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/migueldeicaza/SwiftGodot", branch: "main"),
+        .package(url: "https://github.com/migueldeicaza/SwiftGodot", revision: "f528ba67accbe3cca06c1d401c8f9d7c17022f63"),
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.25.0")
     ],
     targets: [
