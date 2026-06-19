@@ -1,5 +1,16 @@
 # SwiftGodotIosPlugins
 
+> [!WARNING]
+> **This repository is deprecated.** Plugins have been migrated to standalone repos following the [GodotApplePlugins](https://github.com/zt-pawer/GodotApplePlugins) architecture:
+>
+> | Plugin | New repo |
+> |--------|----------|
+> | AdMob | [zt-pawer/GodotAdMob](https://github.com/zt-pawer/GodotAdMob) |
+> | Firebase Auth + App Check | [zt-pawer/GodotFirebase](https://github.com/zt-pawer/GodotFirebase) |
+> | AppleSignIn, GameCenter, ICloud, InAppPurchase, GoogleSignIn | [zt-pawer/GodotApplePlugins](https://github.com/zt-pawer/GodotApplePlugins) |
+>
+> This repo will not receive further updates. Please migrate to the standalone repos above.
+
 This is a Swift implementation using the [SwiftGodot](https://github.com/migueldeicaza/SwiftGodot/) framework of some the plugins for Godot.
 
 [![Godot](https://img.shields.io/badge/Godot%20Engine-4.6.3-blue.svg)](https://github.com/godotengine/godot/)
@@ -19,7 +30,7 @@ There are few major benefits with this version of the plugins compared to the cl
 
 # Supported Plugins
 
-Currently, SwiftGodotIosPlugins implements the iOS **AdMob**, **AppleSignIn**, **GameCenter**, **GodotFirebase** (Firebase Core, Anonymous Auth, App Check), **ICloud**, and **InAppPurchase** integrations.
+Currently, SwiftGodotIosPlugins implements the iOS **AdMob**, **AppleSignIn**, **GameCenter**, **GodotFirebase** (Firebase Core, Anonymous Auth, App Check), **GodotGoogleSignIn**, **ICloud**, and **InAppPurchase** integrations.
 
 Other iOS integrations (camera, arkit, apn, photo_picker) are under consideration.
 
@@ -42,6 +53,7 @@ Register the signals as indicated for each plugin and implement the methods that
 - [AppleSignIn](AppleSignIn/README.md)
 - [GameCenter](GameCenter/README.md)
 - [GodotFirebase](GodotFirebase/README.md)
+- [GodotGoogleSignIn](GodotGoogleSignIn/README.md)
 - [ICloud](ICloud/README.md)
 - [InAppPurchase](InAppPurchase/README.md)
 
