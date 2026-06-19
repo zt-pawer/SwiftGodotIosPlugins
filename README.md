@@ -1,13 +1,13 @@
 # SwiftGodotIosPlugins
 
 > [!WARNING]
-> **This repository is deprecated.** Plugins have been migrated to standalone repos following the [GodotApplePlugins](https://github.com/zt-pawer/GodotApplePlugins) architecture:
+> **This repository is deprecated.** Plugins have been migrated to standalone repos following the [GodotApplePlugins](https://github.com/migueldeicaza/GodotApplePlugins) architecture:
 >
 > | Plugin | New repo |
 > |--------|----------|
 > | AdMob | [zt-pawer/GodotAdMob](https://github.com/zt-pawer/GodotAdMob) |
 > | Firebase Auth + App Check | [zt-pawer/GodotFirebase](https://github.com/zt-pawer/GodotFirebase) |
-> | AppleSignIn, GameCenter, ICloud, InAppPurchase, GoogleSignIn | [zt-pawer/GodotApplePlugins](https://github.com/zt-pawer/GodotApplePlugins) |
+> | AppleSignIn, GameCenter, ICloud, InAppPurchase, GoogleSignIn | [migueldeicaza/GodotApplePlugins](https://github.com/migueldeicaza/GodotApplePlugins) |
 >
 > This repo will not receive further updates. Please migrate to the standalone repos above.
 
